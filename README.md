@@ -1,75 +1,58 @@
-# React + TypeScript + Vite
+# TP2 CIU - Grupo 1
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+El repositorio incluye las dos partes del proyecto:
 
-Currently, two official plugins are available:
+- `frontend/`: aplicación React con Vite.
+- `backend/`: API Express con Sequelize y SQLite.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Ejecutar el proyecto
 
-## React Compiler
+Desde la carpeta principal, instalar las dependencias:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm --prefix backend ci
+npm --prefix frontend ci
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+Para configurar el backend, copiar `backend/.env.example` a `backend/.env`.
+La API usa el puerto 3001 por defecto.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+En una terminal:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+cd backend
+# Solo para crear o reiniciar la base con datos de ejemplo; borra los datos existentes:
+node seed.js
+npm run dev
 ```
+
+En otra terminal, desde la carpeta principal:
+
+```bash
+npm --prefix frontend run dev
+```
+
+Consultar `backend/README.md` para ver los endpoints de la API.
+
+## Sincronizar con GitHub
+
+El repositorio Git se administra desde esta carpeta principal, que contiene
+`frontend/` y `backend/`. Ambos se versionan juntos y comparten el historial.
+
+Antes de comenzar a trabajar:
+
+```bash
+git pull --ff-only
+```
+
+Para subir cambios de cualquiera de las dos partes:
+
+```bash
+git add .
+git commit -m "Describir los cambios"
+git push
+```
+
+La sincronización se realiza con `git pull` y `git push`; guardar archivos por sí
+solo no los sube a GitHub. Las dependencias, las variables de entorno privadas y
+la base de datos SQLite local quedan excluidas del repositorio.
