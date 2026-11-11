@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import {userService} from './services/userService'
 
 function App() {
-  const [count, setCount] = useState(0)
 
+  const users = userService.getAllUsers()
+  console.log(users)
   return (
     <>
       <section id="center">
@@ -15,12 +16,10 @@ function App() {
         <button
           type="button"
           className="counter"
-          onClick={() => setCount((count) => count + 1)}
         >
-          Count is {count}
+          total users is
         </button>
       </section>
-
     </>
   )
 }
