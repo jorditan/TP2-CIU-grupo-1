@@ -1,3 +1,4 @@
+import Login from './pages/login/Login'
 import {userService} from './services/userService'
 
 function App() {
@@ -6,20 +7,7 @@ function App() {
   console.log(users)
   return (
     <>
-      <section id="center">
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-        >
-          total users is
-        </button>
-      </section>
+      <Login/>
     </>
   )
 }
