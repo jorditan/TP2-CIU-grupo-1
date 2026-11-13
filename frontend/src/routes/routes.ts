@@ -1,16 +1,22 @@
 import type { RouteObject } from "react-router-dom";
 import Login from "../pages/login/Login";
 import RegisterPage from "@/pages/register/RegisterPage";
+import App from "@/App";
 
 const routes = [
   {
-    path: "/login",
-    Component: Login,
+    Component: App,
+    children: [
+      {
+        path: "/login",
+        Component: Login,
+      },
+      {
+        path: "/register",
+        Component: RegisterPage,
+      },
+    ],
   },
-  {
-    path: "/register",
-    Component: RegisterPage,
-  }
 ] satisfies RouteObject[];
 
 export default routes;
