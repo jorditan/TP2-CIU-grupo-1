@@ -1,15 +1,19 @@
-import Login from './pages/login/Login'
-import {userService} from './services/userService'
+import { Outlet } from "react-router-dom";
+import { ThemeProvider } from "@/components/theme-provider";
+import { userService } from "./services/userService";
+import Navbar from "./components/navbar";
 
 function App() {
-
-  const users = userService.getAllUsers()
-  console.log(users)
+  const users = userService.getAllUsers();
+  console.log(users);
   return (
     <>
-      <Login/>
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        <Navbar />
+        <Outlet />
+      </ThemeProvider>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
