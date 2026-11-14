@@ -1,10 +1,10 @@
-import axios from 'axios';
+import axios from "axios";
 
 export const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3001',
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:3001",
   timeout: 10000,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
@@ -13,8 +13,7 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Manejar token expirado o no autorizado (ej. limpiar storage o redirigir a login)
-      localStorage.removeItem('token');
+      localStorage.removeItem("token");
     }
     return Promise.reject(error);
   }

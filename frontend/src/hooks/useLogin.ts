@@ -1,14 +1,16 @@
 import { userService } from "@/services/userService";
 import { useState } from "react";
-import { toast } from "sonner"
-import { useNavigate } from 'react-router-dom';
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
 
 export const useLogin = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  
+  const { loginUser } = useAuth();
+
   const login = async (nickname: string, password: string) => {
-      console.log(nickname, password)
+    console.log(nickname, password);
     // if (nickname === "") {
     //   toast.error('El campo de correo electrónico no puede estar vacío.');
     //   return;
@@ -20,23 +22,26 @@ export const useLogin = () => {
     try {
       setIsLoading(true);
       const users = await userService.getAllUsers();
-      console.log(users)
+      console.log(users);
       const user = users.find((u) => u.nickName === nickname);
       if (user) {
-        console.log('User found:', user);
+        console.log("User found:", user);
         toast.success(`¡Bienvenido, ${user.nickName}!`);
-        localStorage.setItem('user', JSON.stringify(user));
-        navigate('/home');
+        localStorage.setItem("user", JSON.stringify(user));
+        navigate("/home");
+        loginUser(user);
       } else {
-        toast.error('El usuario no existe.');
+        toast.error("El usuario no existe.");
       }
-    } catch(error) {
-      console.error('Error during login:', error);
-      toast.error('Ocurrió un error durante el inicio de sesión. Por favor, inténtalo de nuevo.');
+    } catch (error) {
+      console.error("Error during login:", error);
+      toast.error(
+        "Ocurrió un error durante el inicio de sesión. Por favor, inténtalo de nuevo."
+      );
     } finally {
       setIsLoading(false);
     }
-  }
+  };
 
-  return { login, isLoading }
-}
+  return { login, isLoading };
+};

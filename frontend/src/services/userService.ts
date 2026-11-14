@@ -1,10 +1,5 @@
-import {apiClient} from './apiClient';
-
-export interface User {
-  id: number;
-  nickName: string;
-  email: string;
-}
+import { apiClient } from "./apiClient";
+import { type User } from "../types/user";
 
 export const userService = {
   getById: async (id: number): Promise<User> => {
@@ -13,15 +8,15 @@ export const userService = {
   },
   getAllUsers: async (): Promise<User[]> => {
     try {
-      const response = await apiClient.get<User[]>('/users');
+      const response = await apiClient.get<User[]>("/users");
       return response.data;
     } catch (error) {
-      console.error('Error fetching users:', error);
+      console.error("Error fetching users:", error);
       throw error;
     }
   },
-  create: async (payload: Omit<User, 'id'>): Promise<User> => {
-    const { data } = await apiClient.post<User>('/users', payload);
+  create: async (payload: Omit<User, "id">): Promise<User> => {
+    const { data } = await apiClient.post<User>("/users", payload);
     return data;
-  }
-}
+  },
+};

@@ -1,22 +1,22 @@
-import { cn } from "cn"
-import {Link} from "react-router-dom"
-import { Button } from "@/components/ui/button"
+import { cn } from "cn";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   Field,
   FieldDescription,
   FieldGroup,
   FieldLabel,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import { useLogin } from "@/hooks/useLogin"
-import { useState } from "react"
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { useLogin } from "@/hooks/useLogin";
+import { useState } from "react";
 
 export function LoginForm({
   className,
@@ -37,7 +37,7 @@ export function LoginForm({
         <CardHeader>
           <CardTitle>Inicar sesión</CardTitle>
           <CardDescription>
-            Ingresa tu usuario para iniciar sesión en tu cuenta
+            Ingresa tu usuario y contraseña para iniciar sesión
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -76,9 +76,9 @@ export function LoginForm({
                 <Button type="submit" disabled={isLoading}>
                   Iniciar sesión
                 </Button>
-          
+
                 <FieldDescription className="text-center">
-                 ¿No tenés una cuenta? <Link to="/register">Registarse</Link>
+                  ¿No tenés una cuenta? <Link to="/register">Registarse</Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>
@@ -86,5 +86,5 @@ export function LoginForm({
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
