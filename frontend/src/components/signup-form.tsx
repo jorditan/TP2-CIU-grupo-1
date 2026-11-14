@@ -1,22 +1,22 @@
-import { cn } from "cn"
-import { Link } from "react-router-dom"
-import { Button } from "@/components/ui/button"
+import { cn } from "cn";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   Field,
   FieldDescription,
   FieldGroup,
   FieldLabel,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import { useState } from "react"
-import { useRegister } from "@/hooks/useRegister"
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
+import { useRegister } from "@/hooks/useRegister";
 
 export function SignupForm({
   className,
@@ -33,7 +33,7 @@ export function SignupForm({
         <CardDescription>
           Ingresa tu información a continuación para crear tu cuenta
         </CardDescription>
-      </CardHeader>+
+      </CardHeader>
       <CardContent>
         <form>
           <FieldGroup>
@@ -47,7 +47,6 @@ export function SignupForm({
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
               />
-      
             </Field>
             <Field>
               <FieldLabel htmlFor="email">Email</FieldLabel>
@@ -59,17 +58,20 @@ export function SignupForm({
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-
             </Field>
             <Field>
               <FieldLabel htmlFor="password">Contraseña</FieldLabel>
-              <Input id="password" type="password" 
+              <Input
+                id="password"
+                type="password"
                 placeholder="********"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-              required />
+                required
+              />
               <FieldDescription>
-                Tu contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula, una letra minúscula y un número.
+                Tu contraseña debe tener al menos 8 caracteres, incluyendo una
+                mayúscula, una minúscula y un número.
               </FieldDescription>
             </Field>
             <Field>
@@ -77,15 +79,22 @@ export function SignupForm({
                 Confirmar contraseña
               </FieldLabel>
               <Input id="confirm-password" type="password" required />
-              <FieldDescription>Porfavor, confirma tu contraseña.</FieldDescription>
+              <FieldDescription>
+                Porfavor, confirma tu contraseña.
+              </FieldDescription>
             </Field>
             <FieldGroup>
               <Field>
-                <Button type="submit" onClick={(e) => {
-                  e.preventDefault();
-                  register(nickname, email, password);
-                }}>Crear cuenta</Button>
-        
+                <Button
+                  type="submit"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    register(nickname, email, password);
+                  }}
+                >
+                  Crear cuenta
+                </Button>
+
                 <FieldDescription className="px-6 text-center">
                   ¿Ya tenés una cuenta? <Link to="/login">Iniciar sesión</Link>
                 </FieldDescription>
@@ -95,5 +104,5 @@ export function SignupForm({
         </form>
       </CardContent>
     </Card>
-  )
+  );
 }
