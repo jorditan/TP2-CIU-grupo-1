@@ -11,6 +11,8 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
+  CardShell,
+  CardSurface,
   CardTitle,
 } from "@/components/ui/card";
 import {
@@ -35,8 +37,8 @@ function Home() {
   const carouselItems = getCarouselItems(postCount);
 
   return (
-    <section className="flex w-full flex-col items-center gap-6 min-h-screen px-4 py-6">
-      <div className="flex w-full max-w-2xl flex-col gap-5">
+    <section className="flex w-full flex-col items-center gap-6 min-h-screen px-4 py-12">
+      <div className="flex w-full max-w-lg flex-col gap-5">
         {user && (
           <div className="flex items-center justify-between px-1">
             <h1 className="text-lg font-medium tracking-tight text-foreground">
@@ -49,21 +51,23 @@ function Home() {
           <CarouselContent>
             {carouselItems.map((item, idx) => (
               <CarouselItem key={item.title} className="p-0.5">
-                <Card className="w-full h-full gap-3 justify-between">
-                  <CardHeader>
-                    <CardAction>
-                      <Badge variant="ghost">
-                        {idx + 1} / {carouselItems.length}
-                      </Badge>
-                    </CardAction>
-                    <CardTitle className="pt-1">{item.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm leading-relaxed text-muted-foreground">
-                      {item.content}
-                    </p>
-                  </CardContent>
-                  <CardFooter className="justify-between bg-transparent">
+                <CardShell className="w-full h-full justify-between">
+                  <CardSurface className="flex-1 gap-3">
+                    <CardHeader>
+                      <CardAction>
+                        <Badge variant="ghost">
+                          {idx + 1} / {carouselItems.length}
+                        </Badge>
+                      </CardAction>
+                      <CardTitle className="pt-1">{item.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm leading-relaxed text-muted-foreground">
+                        {item.content}
+                      </p>
+                    </CardContent>
+                  </CardSurface>
+                  <CardFooter className="justify-between border-t-0 bg-transparent px-2.5 pt-2 pb-1">
                     {item.showMembers ? (
                       <div className="flex items-center gap-2.5">
                         <AvatarGroup>
@@ -97,7 +101,7 @@ function Home() {
                       </span>
                     )}
                   </CardFooter>
-                </Card>
+                </CardShell>
               </CarouselItem>
             ))}
           </CarouselContent>
@@ -114,7 +118,7 @@ function Home() {
         </Carousel>
       </div>
 
-      <div className="mx-auto flex w-full max-w-md flex-col gap-4">
+      <div className="mx-auto flex w-full max-w-lg flex-col gap-4">
         <div className="flex items-center gap-3">
           <Separator className="flex-1" />
           <div className="flex items-center gap-2 shrink-0">
