@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
 import { ThemeProvider } from "@/components/theme-provider";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { userService } from "./services/userService";
 import Navbar from "./components/navbar";
 
@@ -9,8 +10,10 @@ function App() {
   return (
     <>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-        <Navbar />
-        <Outlet />
+        <TooltipProvider>
+          <Navbar />
+          <Outlet />
+        </TooltipProvider>
       </ThemeProvider>
     </>
   );
