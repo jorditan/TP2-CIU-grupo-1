@@ -20,23 +20,34 @@ import {
 } from "./ui/dropdown-menu";
 import { useAuth } from "@/context/AuthContext";
 import { useTag } from "@/hooks/useTag";
+import {
+  Command,
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "./ui/command";
+import { useState } from "react";
+import { Search } from "lucide-react";
 
 function Navbar() {
   const { user, logoutUser } = useAuth();
   const { tags } = useTag();
+  const [open, setOpen] = useState(false);
   return (
-    <header className="w-full fixed top-0 left-0 flex items-center justify-between py-2 px-8 bg-background border-b border-border">
+    <header className="sticky top-3 z-50 mx-auto flex w-[calc(100%-2rem)] max-w-4xl items-center justify-between rounded-2xl border border-border/60 bg-background/70 px-6 py-2 shadow-sm backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
       {user ? (
         <DropdownMenu>
           <DropdownMenuTrigger
             render={
               <Button variant="ghost" size="icon" className="rounded-full">
                 <Avatar>
-                  <AvatarImage
-                    src="https://github.com/shadcn.png"
-                    alt="shadcn"
-                  />
-                  <AvatarFallback>CN</AvatarFallback>
+                  <AvatarImage alt="shadcn" />
+                  <AvatarFallback>
+                    {user.nickName.charAt(0).toUpperCase()}
+                  </AvatarFallback>
                 </Avatar>
               </Button>
             }
@@ -58,8 +69,8 @@ function Navbar() {
           Iniciar sesión
         </Button>
       )}
-      <NavigationMenu className="flex justify-center m-auto">
-        <NavigationMenuList>
+      <NavigationMenu className="flex justify-center w-full">
+        <NavigationMenuList className="flex gap-2">
           <NavigationMenuItem>
             <NavigationMenuLink render={<Link to="/home">Inicio</Link>} />
           </NavigationMenuItem>
@@ -67,7 +78,9 @@ function Navbar() {
             <NavigationMenuLink render={<Link to="/home">Tendencias</Link>} />
           </NavigationMenuItem>
           <NavigationMenuItem>
-            <NavigationMenuTrigger>Categorías</NavigationMenuTrigger>
+            <NavigationMenuTrigger className="bg-transparent">
+              Categorías
+            </NavigationMenuTrigger>
             <NavigationMenuContent>
               {tags.map((tag) => (
                 <NavigationMenuLink key={tag.id} href={`/tags/${tag.id}`}>
@@ -75,6 +88,29 @@ function Navbar() {
                 </NavigationMenuLink>
               ))}
             </NavigationMenuContent>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <Button
+              onClick={() => setOpen(true)}
+              variant="outline"
+              className="w-full bg-transparent text-muted-foreground/80"
+            >
+              <Search className="h-4 w-4 opacity-50" />
+              Buscar usuario
+            </Button>
+            <CommandDialog open={open} onOpenChange={setOpen}>
+              <Command>
+                <CommandInput placeholder="Encontrá al usuario que buscás..." />
+                <CommandList>
+                  <CommandEmpty>No results found.</CommandEmpty>
+                  <CommandGroup heading="Últimas búsquedas">
+                    <CommandItem>mmati jordan</CommandItem>
+                    <CommandItem>nicolaspaz</CommandItem>
+                    <CommandItem>Sebavilla</CommandItem>
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </CommandDialog>
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>

@@ -1,36 +1,38 @@
-import {apiClient} from './apiClient';
+import { apiClient } from "./apiClient";
 
 export const commentService = {
-  getCommentsByPostId: async(postId: string) => {
+  getCommentsByPostId: async (postId: number) => {
     try {
-      const response = await apiClient.get(`/posts/${postId}/comments`);
+      const response = await apiClient.get(`/comments/post/${postId}`);
       return response.data;
     } catch (error) {
-      console.error('Error fetching comments:', error);
+      console.error("Error fetching comments:", error);
     }
   },
-  getCommentById: async(commentId: string) => {
+  getCommentById: async (commentId: number) => {
     try {
       const response = await apiClient.get(`/comments/${commentId}`);
       return response.data;
     } catch (error) {
-      console.error('Error fetching comment:', error);
+      console.error("Error fetching comment:", error);
     }
   },
-  createComment: async(postId:string, content: string) => {
+  createComment: async (postId: number, content: string) => {
     try {
-      const response = await apiClient.post(`/posts/${postId}/comments`, { content });
+      const response = await apiClient.post(`/comments/post/${postId}`, {
+        content,
+      });
       return response.data;
     } catch (error) {
-      console.error('Error creating comment:', error);
+      console.error("Error creating comment:", error);
     }
   },
-  deleteComment: async(commentId: string) => {
+  deleteComment: async (commentId: number) => {
     try {
       const response = await apiClient.delete(`/comments/${commentId}`);
       return response.data;
     } catch (error) {
-      console.error('Error deleting comment:', error);
+      console.error("Error deleting comment:", error);
     }
-  }
-}
+  },
+};

@@ -15,7 +15,9 @@ export const postService = {
     return response.data;
   },
   getPostImages: async (postId: number): Promise<string[]> => {
-    const response = await apiClient.get<string[]>(`/posts/${postId}/images`);
+    const response = await apiClient.get<string[]>(
+      `/postimages/post/${postId}`
+    );
     return response.data;
   },
 };

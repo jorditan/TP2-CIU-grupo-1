@@ -8,12 +8,15 @@ import {
 } from "./ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Heart, MessageCircle, Share } from "lucide-react";
+import { Heart, MessageCircle } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { formatDate } from "@/lib/utils";
+import { usePost } from "@/hooks/usePost";
+import { Link } from "react-router-dom";
 
 function PostCard({ post }: { post: Post }) {
   const displayName = post.User?.nickName || post.author || "Usuario";
+
   const handle = `@${displayName.toLowerCase().replace(/\s+/g, "")}`;
   const initials = displayName.slice(0, 2).toUpperCase();
   const coverImage = post.PostImages?.[0]?.url;
@@ -56,7 +59,7 @@ function PostCard({ post }: { post: Post }) {
             {post.title}
           </h3>
         )}
-        <p className="text-md leading-relaxed text-muted-foreground">
+        <p className="text-md leading-relaxed text-foreground">
           {post.description}
         </p>
         {post.Tags && post.Tags.length > 0 && (
@@ -66,10 +69,8 @@ function PostCard({ post }: { post: Post }) {
                 key={tag.id}
                 className="text-sm font-medium text-blue-600 dark:text-blue-400"
               >
-                <Badge>
-                  <span className="text-xs capitalize font-medium">
-                    {tag.name}
-                  </span>
+                <Badge variant="secondary">
+                  <span className="capitalize">{tag.name}</span>
                 </Badge>
               </span>
             ))}
@@ -77,7 +78,7 @@ function PostCard({ post }: { post: Post }) {
         )}
       </CardContent>
 
-      <CardFooter className="justify-between bg-transparent px-2 py-2">
+      <CardFooter className="justify-between bg-transparent gap-1 px-2 py-2">
         <Button
           variant="ghost"
           className="flex-1 gap-2 text-muted-foreground hover:text-foreground"
@@ -90,14 +91,13 @@ function PostCard({ post }: { post: Post }) {
           className="flex-1 gap-2 text-muted-foreground hover:text-foreground"
         >
           <MessageCircle className="size-4" />
-          <span>Comentar</span>
+          <span>{usePost().countComments(post.id)} Comentarios</span>
         </Button>
         <Button
-          variant="ghost"
-          className="flex-1 gap-2 text-muted-foreground hover:text-foreground"
+          render={<Link to={`/posts/${post.id}`}>Ver más</Link>}
+          className="flex-1 gap-2 "
         >
-          <Share className="size-4" />
-          <span>Compartir</span>
+          Ver más
         </Button>
       </CardFooter>
     </Card>
