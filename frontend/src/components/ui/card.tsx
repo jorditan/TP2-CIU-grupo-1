@@ -1,6 +1,37 @@
 import * as React from "react"
 import { cn } from "cn"
 
+function CardShell({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="card-shell"
+      className={cn(
+        "group/card-shell flex flex-col overflow-hidden rounded-2xl bg-card-shell p-1.5 text-sm text-card-foreground ring-1 ring-foreground/10 shadow-[0_8px_24px_-6px_rgb(0_0_0/0.12)] transition-[box-shadow,ring-color] duration-200 hover:ring-foreground/15 dark:ring-white/[0.07] dark:shadow-[0_12px_32px_-8px_rgb(0_0_0/0.6)] dark:hover:ring-white/[0.11]",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+function CardSurface({
+  className,
+  size = "default",
+  ...props
+}: React.ComponentProps<"div"> & { size?: "default" | "sm" }) {
+  return (
+    <div
+      data-slot="card-surface"
+      data-size={size}
+      className={cn(
+        "group/card flex flex-col gap-(--card-spacing) overflow-hidden rounded-[11px] bg-card py-(--card-spacing) text-sm text-card-foreground ring-1 ring-foreground/[0.06] shadow-(--card-highlight) [--card-spacing:--spacing(4)] has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(3)] dark:ring-white/[0.08] *:[img:first-child]:rounded-t-[11px] *:[img:last-child]:rounded-b-[11px]",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
 function Card({
   className,
   size = "default",
@@ -11,7 +42,7 @@ function Card({
       data-slot="card"
       data-size={size}
       className={cn(
-        "group/card flex flex-col gap-(--card-spacing) overflow-hidden rounded-xl bg-card py-(--card-spacing) text-sm text-card-foreground ring-1 ring-foreground/10 [--card-spacing:--spacing(4)] has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(3)] data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl",
+        "group/card flex flex-col gap-(--card-spacing) overflow-hidden rounded-xl bg-card py-(--card-spacing) text-sm text-card-foreground ring-1 ring-foreground/10 shadow-(--card-highlight) [--card-spacing:--spacing(4)] has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(3)] data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl",
         className
       )}
       {...props}
@@ -93,6 +124,8 @@ function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
 
 export {
   Card,
+  CardShell,
+  CardSurface,
   CardHeader,
   CardFooter,
   CardTitle,

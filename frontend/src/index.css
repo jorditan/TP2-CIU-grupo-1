@@ -36,11 +36,15 @@
     font-size: 16px;
   }
 
-  --background: oklch(1 0 0);
+  --background: oklch(0.985 0 0);
 
   --foreground: oklch(0.145 0 0);
 
   --card: oklch(1 0 0);
+
+  --card-shell: oklch(0.955 0 0);
+
+  --card-highlight: inset 0 1px 0 0 rgb(255 255 255 / 0.8), 0 1px 2px 0 rgb(0 0 0 / 0.04);
 
   --card-foreground: oklch(0.145 0 0);
 
@@ -146,6 +150,7 @@
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
+  --color-card-shell: var(--card-shell);
   --color-card: var(--card);
   --color-foreground: var(--foreground);
   --color-background: var(--background);
@@ -159,9 +164,11 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
+  --background: oklch(0.115 0 0);
   --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
+  --card: oklch(0.195 0 0);
+  --card-shell: oklch(0.152 0 0);
+  --card-highlight: inset 0 1px 0 0 rgb(255 255 255 / 0.06), 0 2px 6px -1px rgb(0 0 0 / 0.35);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
@@ -196,6 +203,6 @@
   * {
     @apply border-border outline-ring/50;}
   body {
-    @apply bg-background text-foreground;}
+    @apply min-h-screen bg-background text-foreground;}
   html {
-    @apply font-sans;}}
+    @apply bg-background font-sans;}}
