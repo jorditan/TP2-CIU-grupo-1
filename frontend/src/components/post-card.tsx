@@ -8,6 +8,14 @@ import {
 } from "./ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselCounter,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 import { Heart, MessageCircle } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { formatDate } from "@/lib/utils";
@@ -19,7 +27,7 @@ function PostCard({ post }: { post: PostWithDetails }) {
 
   const handle = `@${displayName.toLowerCase().replace(/\s+/g, "")}`;
   const initials = displayName.slice(0, 2).toUpperCase();
-  const coverImage = post.PostImages?.[0]?.url;
+  const postImages = post.images?.length ? post.images : (post.PostImages ?? []);
 
   return (
     <CardShell className="w-full max-w-lg">
@@ -44,14 +52,39 @@ function PostCard({ post }: { post: PostWithDetails }) {
           </CardAction>
         </CardHeader>
 
-        {coverImage && (
+        {postImages.length === 1 && (
           <div className="w-full overflow-hidden">
             <img
-              src={coverImage}
+              src={postImages[0].url}
               alt={post.title || "Imagen del post"}
               className="h-60 w-full object-cover"
             />
           </div>
+        )}
+
+        {postImages.length > 1 && (
+          <Carousel opts={{ loop: true }} className="w-full">
+            <CarouselContent>
+              {postImages.map((img, idx) => (
+                <CarouselItem key={img.id ?? idx}>
+                  <div className="w-full overflow-hidden">
+                    <img
+                      src={img.url}
+                      alt={`${post.title || "Imagen del post"} ${idx + 1}`}
+                      className="h-60 w-full object-cover"
+                    />
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <div className="mt-2 flex items-center justify-between px-4">
+              <CarouselCounter />
+              <div className="flex items-center gap-1.5">
+                <CarouselPrevious className="static translate-y-0 size-7" />
+                <CarouselNext className="static translate-y-0 size-7" />
+              </div>
+            </div>
+          </Carousel>
         )}
 
         <CardContent className="flex flex-col gap-2">
@@ -96,6 +129,7 @@ function PostCard({ post }: { post: PostWithDetails }) {
             <span>{post.comments.length}</span>
           </Button>
         </div>
+        {/* Le pasamos el post en state para no tener que volver a pedirlo en el detalle */}
         <Button
           render={
             <Link to={`/posts/${post.id}`} state={{ post }}>

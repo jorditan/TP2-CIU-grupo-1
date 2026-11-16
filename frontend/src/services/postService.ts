@@ -1,4 +1,5 @@
 import type { Post } from "@/types/post";
+import type { PostImage } from "@/types/postImage";
 import { apiClient } from "./apiClient";
 
 export const postService = {
@@ -14,8 +15,8 @@ export const postService = {
     const response = await apiClient.get<Post[]>(`/tags/${tagId}/posts`);
     return response.data;
   },
-  getPostImages: async (postId: number): Promise<string[]> => {
-    const response = await apiClient.get<string[]>(
+  getPostImages: async (postId: number): Promise<PostImage[]> => {
+    const response = await apiClient.get<PostImage[]>(
       `/postimages/post/${postId}`
     );
     return response.data;
