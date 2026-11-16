@@ -15,11 +15,21 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselCounter,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 import { Separator } from "@/components/ui/separator";
 
-function Post({ post: postProp }: { post?: PostWithDetails }) {
+function Post() {
+  // Como llegamos acá desde el <Link> de PostCard cambiando la URL, React Router
+  // no nos pasa el post por props sino adentro de useLocation().state
   const { state } = useLocation() as { state?: { post?: PostWithDetails } };
-  const post = postProp ?? state?.post;
+  const post = state?.post;
 
   if (!post) {
     return (
@@ -41,7 +51,7 @@ function Post({ post: postProp }: { post?: PostWithDetails }) {
   const displayName = post.User?.nickName || post.author || "Usuario";
   const handle = `@${displayName.toLowerCase().replace(/\s+/g, "")}`;
   const initials = displayName.slice(0, 2).toUpperCase();
-  const coverImage = post.PostImages?.[0]?.url;
+  const postImages = post.images?.length ? post.images : (post.PostImages ?? []);
 
   return (
     <section className="flex min-h-screen w-full flex-col items-center gap-6 px-4 py-6">
@@ -78,14 +88,39 @@ function Post({ post: postProp }: { post?: PostWithDetails }) {
             </CardAction>
           </CardHeader>
 
-          {coverImage && (
+          {postImages.length === 1 && (
             <div className="w-full overflow-hidden">
               <img
-                src={coverImage}
+                src={postImages[0].url}
                 alt={post.title || "Imagen del post"}
                 className="max-h-96 w-full object-cover"
               />
             </div>
+          )}
+
+          {postImages.length > 1 && (
+            <Carousel opts={{ loop: true }} className="w-full">
+              <CarouselContent>
+                {postImages.map((img, idx) => (
+                  <CarouselItem key={img.id ?? idx}>
+                    <div className="w-full overflow-hidden">
+                      <img
+                        src={img.url}
+                        alt={`${post.title || "Imagen del post"} ${idx + 1}`}
+                        className="max-h-96 w-full object-cover"
+                      />
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <div className="mt-2 flex items-center justify-between px-5">
+                <CarouselCounter />
+                <div className="flex items-center gap-1.5">
+                  <CarouselPrevious className="static translate-y-0 size-7" />
+                  <CarouselNext className="static translate-y-0 size-7" />
+                </div>
+              </div>
+            </Carousel>
           )}
 
           <CardContent className="flex flex-col gap-3 px-5">

@@ -2,11 +2,12 @@ import { postService } from "@/services/postService";
 import { commentService } from "@/services/commentService";
 import { type Post } from "@/types/post";
 import { type Comment } from "@/types/comment";
+import { type PostImage } from "@/types/postImage";
 import { useEffect, useState } from "react";
 
 export interface PostWithDetails extends Post {
   comments: Comment[];
-  images: string[];
+  images: PostImage[];
 }
 
 export const usePost = () => {

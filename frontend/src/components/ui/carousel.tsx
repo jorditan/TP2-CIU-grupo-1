@@ -244,9 +244,28 @@ function CarouselNext({
   )
 }
 
+function CarouselCounter({
+  className,
+  ...props
+}: React.ComponentProps<"span">) {
+  const { current, count } = useCarousel()
+  if (count <= 0) return null
+
+  return (
+    <span
+      data-slot="carousel-counter"
+      className={cn("text-xs text-muted-foreground tabular-nums", className)}
+      {...props}
+    >
+      {current + 1}/{count}
+    </span>
+  )
+}
+
 export {
   Carousel,
   CarouselContent,
+  CarouselCounter,
   CarouselItem,
   CarouselPrevious,
   CarouselNext,
