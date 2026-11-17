@@ -9,30 +9,13 @@ export const commentService = {
       console.error("Error fetching comments:", error);
     }
   },
-  getCommentById: async (commentId: number) => {
-    try {
-      const response = await apiClient.get(`/comments/${commentId}`);
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching comment:", error);
-    }
-  },
-  createComment: async (postId: number, content: string) => {
-    try {
-      const response = await apiClient.post(`/comments/post/${postId}`, {
-        content,
-      });
-      return response.data;
-    } catch (error) {
-      console.error("Error creating comment:", error);
-    }
-  },
-  deleteComment: async (commentId: number) => {
-    try {
-      const response = await apiClient.delete(`/comments/${commentId}`);
-      return response.data;
-    } catch (error) {
-      console.error("Error deleting comment:", error);
-    }
+  createComment: async (postId: number, content: string, userId: number) => {
+    const response = await apiClient.post("/comments", {
+      content,
+      userId,
+      postId,
+    });
+
+    return response.data;
   },
 };
