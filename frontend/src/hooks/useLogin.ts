@@ -10,15 +10,14 @@ export const useLogin = () => {
   const { loginUser } = useAuth();
 
   const login = async (nickname: string, password: string) => {
-    console.log(nickname, password);
-    // if (nickname === "") {
-    //   toast.error('El campo de correo electrónico no puede estar vacío.');
-    //   return;
-    // }
-    // if (password !== "123456") {
-    //   toast.error('La contraseña es incorrecta.');
-    //   return;
-    // }
+    if (nickname === "") {
+      toast.error("El campo de correo electrónico no puede estar vacío.");
+      return;
+    }
+    if (password !== "123456") {
+      toast.error("La contraseña es incorrecta.");
+      return;
+    }
     try {
       setIsLoading(true);
       const users = await userService.getAllUsers();

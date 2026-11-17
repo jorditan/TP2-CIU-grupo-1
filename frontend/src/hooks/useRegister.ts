@@ -1,4 +1,5 @@
-import { userService, type User } from "@/services/userService";
+import { userService } from "@/services/userService";
+import type { User } from "@/types/user";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
