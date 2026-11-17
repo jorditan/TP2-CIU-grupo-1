@@ -41,7 +41,7 @@ function Home() {
       <div className="flex w-full max-w-lg flex-col gap-5">
         {user && (
           <div className="flex items-center justify-between px-1">
-            <h1 className="text-lg font-medium tracking-tight text-foreground">
+            <h1 className="text-xl font-medium tracking-tight text-foreground">
               {getGreeting()}, {user.nickName}
             </h1>
           </div>
