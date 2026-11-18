@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
+import { ImageUpload } from "@/components/image-upload";
 import {
   DialogDescription,
   DialogFooter,
@@ -15,7 +16,6 @@ import {
 } from "@/components/ui/dialog";
 import {
   Field,
-  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
@@ -28,22 +28,19 @@ import {
 } from "@/components/ui/input-group";
 
 const formSchema = z.object({
-  title: z
-    .string()
-    .min(5, "Bug title must be at least 5 characters.")
-    .max(32, "Bug title must be at most 32 characters."),
   description: z
     .string()
     .min(20, "Description must be at least 20 characters.")
-    .max(100, "Description must be at most 100 characters."),
+    .max(240, "Description must be at most 240 characters."),
+  images: z.array(z.instanceof(File)),
 });
 
 export function PostForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "",
       description: "",
+      images: [],
     },
   });
 
@@ -51,7 +48,16 @@ export function PostForm() {
     toast("You submitted the following values:", {
       description: (
         <pre className="mt-2 w-[320px] overflow-x-auto rounded-md bg-code p-4 text-code-foreground">
-          <code>{JSON.stringify(data, null, 2)}</code>
+          <code>
+            {JSON.stringify(
+              data,
+              (_key, value) =>
+                value instanceof File
+                  ? { name: value.name, type: value.type, size: value.size }
+                  : value,
+              2
+            )}
+          </code>
         </pre>
       ),
       position: "bottom-right",
@@ -72,7 +78,11 @@ export function PostForm() {
           Ingresa la información necesaria para crear una publicación.
         </DialogDescription>
       </DialogHeader>
-      <form id="form-rhf-demo" onSubmit={form.handleSubmit(onSubmit)}>
+      <form
+        id="form-rhf-demo"
+        className="flex min-w-0 flex-col gap-5"
+        onSubmit={form.handleSubmit(onSubmit)}
+      >
         <FieldGroup>
           <Controller
             name="description"
@@ -80,27 +90,23 @@ export function PostForm() {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor="form-rhf-demo-description">
-                  Contenido del post
+                  Descripción
                 </FieldLabel>
                 <InputGroup>
                   <InputGroupTextarea
                     {...field}
                     id="form-rhf-demo-description"
-                    placeholder="I'm having an issue with the login button on mobile."
+                    placeholder="Descripción de la publicación..."
                     rows={6}
                     className="min-h-24 resize-none"
                     aria-invalid={fieldState.invalid}
                   />
                   <InputGroupAddon align="block-end">
                     <InputGroupText className="tabular-nums">
-                      {field.value.length}/100 characters
+                      {field.value.length}/240 caracteres
                     </InputGroupText>
                   </InputGroupAddon>
                 </InputGroup>
-                <FieldDescription>
-                  Include steps to reproduce, expected behavior, and what
-                  actually happened.
-                </FieldDescription>
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
@@ -108,13 +114,30 @@ export function PostForm() {
             )}
           />
         </FieldGroup>
+        <FieldGroup>
+          <Controller
+            name="images"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <ImageUpload
+                {...field}
+                disabled={form.formState.isSubmitting}
+                error={fieldState.error?.message}
+              />
+            )}
+          />
+        </FieldGroup>
       </form>
       <DialogFooter>
         <Button type="button" variant="outline" onClick={() => form.reset()}>
-          Reset
+          Cancelar
         </Button>
-        <Button type="submit" form="form-rhf-demo">
-          Submit
+        <Button
+          disabled={form.formState.isSubmitting}
+          type="submit"
+          form="form-rhf-demo"
+        >
+          Crear
         </Button>
       </DialogFooter>
     </>
