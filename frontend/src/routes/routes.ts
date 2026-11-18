@@ -2,6 +2,7 @@ import type { RouteObject } from "react-router-dom";
 import Login from "../pages/login/Login";
 import Home from "@/pages/home/Home";
 import RegisterPage from "@/pages/register/RegisterPage";
+import Profile from "@/pages/profile/Profile";
 import Post from "@/components/post";
 import App from "@/App";
 
@@ -25,6 +26,10 @@ const routes = [
       {
         path: "/home",
         Component: Home,
+      },
+      {
+        path: "/profile",
+        Component: Profile,
       },
       {
         path: "/posts/:id",
