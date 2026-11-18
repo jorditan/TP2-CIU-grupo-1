@@ -4,20 +4,30 @@ import { apiClient } from "./apiClient";
 
 export const postService = {
   getById: async (id: number): Promise<Post> => {
-    const response = await apiClient.get<Post>(`/posts/${id}`);
+    const response = await apiClient.get<Post>(\`/posts/\${id}\`);
     return response.data;
   },
+
   getAll: async (): Promise<Post[]> => {
     const response = await apiClient.get<Post[]>("/posts");
     return response.data;
   },
-  getByTag: async (tagId: number): Promise<Post[]> => {
-    const response = await apiClient.get<Post[]>(`/tags/${tagId}/posts`);
+
+  getByUserId: async (userId: number): Promise<Post[]> => {
+    const response = await apiClient.get<Post[]>("/posts", {
+      params: { userId },
+    });
     return response.data;
   },
+
+  getByTag: async (tagId: number): Promise<Post[]> => {
+    const response = await apiClient.get<Post[]>(\`/tags/\${tagId}/posts\`);
+    return response.data;
+  },
+
   getPostImages: async (postId: number): Promise<PostImage[]> => {
     const response = await apiClient.get<PostImage[]>(
-      `/postimages/post/${postId}`
+      \`/postimages/post/\${postId}\`
     );
     return response.data;
   },
