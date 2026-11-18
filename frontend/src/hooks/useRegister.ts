@@ -1,5 +1,5 @@
 import { userService } from "@/services/userService";
-import type { User } from "@/types/user";
+import { isAxiosError } from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -11,13 +11,14 @@ export const useRegister = () => {
   const register = async (
     nickname: string,
     email: string,
-    password: string
+    password: string,
+    confirmPassword: string
   ) => {
-    if (nickname === "") {
+    if (nickname.trim() === "") {
       toast.error("El campo de usuario no puede estar vacío.");
       return;
     }
-    if (email === "") {
+    if (email.trim() === "") {
       toast.error("El campo de correo electrónico no puede estar vacío.");
       return;
     }
@@ -25,17 +26,25 @@ export const useRegister = () => {
       toast.error("La contraseña debe tener al menos 8 caracteres.");
       return;
     }
+    if (password !== confirmPassword) {
+      toast.error("Las contraseñas no coinciden.");
+      return;
+    }
     try {
       setIsLoading(true);
-      const user: User = { nickName: nickname, email: nickname, id: 0 };
-      // Acá se llama al servicio para crear al usuario
-      await userService.create(user);
-      console.log("User registered:", user);
-      toast.success(`¡Usuario ${nickname} registrado exitosamente!`);
+      await userService.create({
+        nickName: nickname.trim(),
+        email: email.trim(),
+      });
+      toast.success(`¡Usuario ${nickname.trim()} registrado exitosamente!`);
       navigate("/login");
     } catch (error) {
       console.error(error);
-      toast.error("Error al registrar el usuario.");
+      const serverMessage =
+        isAxiosError<{ error?: string }>(error) && error.response?.data?.error
+          ? error.response.data.error
+          : "Error al registrar el usuario.";
+      toast.error(serverMessage);
     } finally {
       setIsLoading(false);
     }

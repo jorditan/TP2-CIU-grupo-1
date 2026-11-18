@@ -7,8 +7,13 @@ import App from "@/App";
 
 const routes = [
   {
+    path: "/",
     Component: App,
     children: [
+      {
+        index: true,
+        Component: Home,
+      },
       {
         path: "/login",
         Component: Login,

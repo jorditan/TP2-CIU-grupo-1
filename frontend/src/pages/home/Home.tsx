@@ -28,6 +28,14 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import { FileText } from "lucide-react";
 
 function Home() {
   const { user } = useAuth();
@@ -145,14 +153,17 @@ function Home() {
             ))}
           </div>
         ) : (
-          <Card className="w-full">
-            <CardHeader>
-              <CardTitle>Aún no hay publicaciones</CardTitle>
-              <CardDescription>
+          <Empty>
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <FileText className="h-8 w-8 opacity-50" />
+              </EmptyMedia>
+              <EmptyTitle>Aún no hay publicaciones</EmptyTitle>
+              <EmptyDescription>
                 Cuando alguien comparta una publicación aparecerá acá.
-              </CardDescription>
-            </CardHeader>
-          </Card>
+              </EmptyDescription>
+            </EmptyHeader>
+          </Empty>
         )}
       </div>
     </section>
