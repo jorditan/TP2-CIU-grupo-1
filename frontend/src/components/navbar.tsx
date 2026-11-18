@@ -31,6 +31,8 @@ import {
 } from "./ui/command";
 import { useState } from "react";
 import { Search } from "lucide-react";
+import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
+import { PostForm } from "./post-form";
 
 function Navbar() {
   const { user, logoutUser } = useAuth();
@@ -40,85 +42,92 @@ function Navbar() {
     <header className="sticky top-3 z-50 mx-auto w-[calc(100%-2rem)] max-w-4xl rounded-2xl bg-card-shell/85 p-1.5 ring-1 ring-foreground/10 shadow-[0_8px_24px_-6px_rgb(0_0_0/0.12)] backdrop-blur-md supports-[backdrop-filter]:bg-card-shell/75 dark:ring-white/[0.07] dark:shadow-[0_12px_32px_-8px_rgb(0_0_0/0.6)]">
       <div className="flex w-full items-center justify-between rounded-[11px] bg-card/90 px-4 py-1.5 ring-1 ring-foreground/[0.06] shadow-(--card-highlight) dark:ring-white/[0.08]">
         {user ? (
-        <DropdownMenu>
-          <DropdownMenuTrigger
-            render={
-              <Button variant="ghost" size="icon" className="rounded-full">
-                <Avatar>
-                  <AvatarImage alt="shadcn" />
-                  <AvatarFallback>
-                    {user.nickName.charAt(0).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              render={
+                <Button variant="ghost" size="icon" className="rounded-full">
+                  <Avatar>
+                    <AvatarImage alt="shadcn" />
+                    <AvatarFallback>
+                      {user.nickName.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              }
+            />
+            <DropdownMenuContent className="w-32">
+              <DropdownMenuGroup>
+                <DropdownMenuItem>Mi perfil</DropdownMenuItem>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem onClick={logoutUser} variant="destructive">
+                  Cerrar sesión
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <Button render={<Link to="/login" />} variant="outline" size="sm">
+            Iniciar sesión
+          </Button>
+        )}
+        <NavigationMenu className="flex justify-center w-full">
+          <NavigationMenuList className="flex gap-2">
+            <NavigationMenuItem>
+              <NavigationMenuLink render={<Link to="/home">Inicio</Link>} />
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink render={<Link to="/home">Tendencias</Link>} />
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuTrigger className="bg-transparent">
+                Categorías
+              </NavigationMenuTrigger>
+              <NavigationMenuContent>
+                {tags.map((tag) => (
+                  <NavigationMenuLink key={tag.id} href={`/tags/${tag.id}`}>
+                    {tag.name}
+                  </NavigationMenuLink>
+                ))}
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <Button
+                onClick={() => setOpen(true)}
+                variant="outline"
+                className="w-full bg-transparent text-muted-foreground/80"
+              >
+                <Search className="h-4 w-4 opacity-50" />
+                Buscar usuario
               </Button>
-            }
-          />
-          <DropdownMenuContent className="w-32">
-            <DropdownMenuGroup>
-              <DropdownMenuItem>Mi perfil</DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem onClick={logoutUser} variant="destructive">
-                Cerrar sesión
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      ) : (
-        <Button render={<Link to="/login" />} variant="outline" size="sm">
-          Iniciar sesión
-        </Button>
-      )}
-      <NavigationMenu className="flex justify-center w-full">
-        <NavigationMenuList className="flex gap-2">
-          <NavigationMenuItem>
-            <NavigationMenuLink render={<Link to="/home">Inicio</Link>} />
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink render={<Link to="/home">Tendencias</Link>} />
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuTrigger className="bg-transparent">
-              Categorías
-            </NavigationMenuTrigger>
-            <NavigationMenuContent>
-              {tags.map((tag) => (
-                <NavigationMenuLink key={tag.id} href={`/tags/${tag.id}`}>
-                  {tag.name}
-                </NavigationMenuLink>
-              ))}
-            </NavigationMenuContent>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <Button
-              onClick={() => setOpen(true)}
-              variant="outline"
-              className="w-full bg-transparent text-muted-foreground/80"
-            >
-              <Search className="h-4 w-4 opacity-50" />
-              Buscar usuario
-            </Button>
-            <CommandDialog open={open} onOpenChange={setOpen}>
-              <Command>
-                <CommandInput placeholder="Encontrá al usuario que buscás..." />
-                <CommandList>
-                  <CommandEmpty>No results found.</CommandEmpty>
-                  <CommandGroup heading="Últimas búsquedas">
-                    <CommandItem>mmati jordan</CommandItem>
-                    <CommandItem>nicolaspaz</CommandItem>
-                    <CommandItem>Sebavilla</CommandItem>
-                  </CommandGroup>
-                </CommandList>
-              </Command>
-            </CommandDialog>
-          </NavigationMenuItem>
-        </NavigationMenuList>
-      </NavigationMenu>
-      <div className="flex items-center gap-2">
-        <ModeToggle />
-        {user && <Button>Crear Publicación</Button>}
-      </div>
+              <CommandDialog open={open} onOpenChange={setOpen}>
+                <Command>
+                  <CommandInput placeholder="Encontrá al usuario que buscás..." />
+                  <CommandList>
+                    <CommandEmpty>No results found.</CommandEmpty>
+                    <CommandGroup heading="Últimas búsquedas">
+                      <CommandItem>mmati jordan</CommandItem>
+                      <CommandItem>nicolaspaz</CommandItem>
+                      <CommandItem>Sebavilla</CommandItem>
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </CommandDialog>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
+        <div className="flex items-center gap-2">
+          <ModeToggle />
+          {user && (
+            <Dialog>
+              <DialogTrigger render={<Button>Crear publicación</Button>} />
+              <DialogContent className="sm:max-w-md">
+                <PostForm />
+              </DialogContent>
+            </Dialog>
+          )}
+        </div>
       </div>
     </header>
   );

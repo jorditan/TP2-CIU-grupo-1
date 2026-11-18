@@ -25,7 +25,14 @@ export function SignupForm({
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { register } = useRegister();
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const { register, isLoading } = useRegister();
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    register(nickname, email, password, confirmPassword);
+  };
+
   return (
     <Card className={cn("shadow-md w-80%", className)} {...props}>
       <CardHeader>
@@ -35,7 +42,7 @@ export function SignupForm({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form>
+        <form onSubmit={handleSubmit}>
           <FieldGroup>
             <Field>
               <FieldLabel htmlFor="nickname">Usuario</FieldLabel>
@@ -78,20 +85,21 @@ export function SignupForm({
               <FieldLabel htmlFor="confirm-password">
                 Confirmar contraseña
               </FieldLabel>
-              <Input id="confirm-password" type="password" required />
+              <Input
+                id="confirm-password"
+                type="password"
+                placeholder="********"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+              />
               <FieldDescription>
                 Porfavor, confirma tu contraseña.
               </FieldDescription>
             </Field>
             <FieldGroup>
               <Field>
-                <Button
-                  type="submit"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    register(nickname, email, password);
-                  }}
-                >
+                <Button type="submit" disabled={isLoading}>
                   Crear cuenta
                 </Button>
 
