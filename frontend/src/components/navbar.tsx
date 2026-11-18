@@ -7,7 +7,7 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ModeToggle } from "./mode-toggle";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
@@ -37,7 +37,9 @@ import { PostForm } from "./post-form";
 function Navbar() {
   const { user, logoutUser } = useAuth();
   const { tags } = useTag();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+
   return (
     <header className="sticky top-3 z-50 mx-auto w-[calc(100%-2rem)] max-w-4xl rounded-2xl bg-card-shell/85 p-1.5 ring-1 ring-foreground/10 shadow-[0_8px_24px_-6px_rgb(0_0_0/0.12)] backdrop-blur-md supports-[backdrop-filter]:bg-card-shell/75 dark:ring-white/[0.07] dark:shadow-[0_12px_32px_-8px_rgb(0_0_0/0.6)]">
       <div className="flex w-full items-center justify-between rounded-[11px] bg-card/90 px-4 py-1.5 ring-1 ring-foreground/[0.06] shadow-(--card-highlight) dark:ring-white/[0.08]">
@@ -47,7 +49,7 @@ function Navbar() {
               render={
                 <Button variant="ghost" size="icon" className="rounded-full">
                   <Avatar>
-                    <AvatarImage alt="shadcn" />
+                    <AvatarImage alt={user.nickName} />
                     <AvatarFallback>
                       {user.nickName.charAt(0).toUpperCase()}
                     </AvatarFallback>
@@ -57,7 +59,9 @@ function Navbar() {
             />
             <DropdownMenuContent className="w-32">
               <DropdownMenuGroup>
-                <DropdownMenuItem>Mi perfil</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/profile")}>
+                  Mi perfil
+                </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
@@ -72,6 +76,7 @@ function Navbar() {
             Iniciar sesión
           </Button>
         )}
+
         <NavigationMenu className="flex justify-center w-full">
           <NavigationMenuList className="flex gap-2">
             <NavigationMenuItem>
@@ -86,7 +91,7 @@ function Navbar() {
               </NavigationMenuTrigger>
               <NavigationMenuContent>
                 {tags.map((tag) => (
-                  <NavigationMenuLink key={tag.id} href={`/tags/${tag.id}`}>
+                  <NavigationMenuLink key={tag.id} href={\`/tags/\${tag.id}\`}>
                     {tag.name}
                   </NavigationMenuLink>
                 ))}
@@ -117,6 +122,7 @@ function Navbar() {
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
+
         <div className="flex items-center gap-2">
           <ModeToggle />
           {user && (
