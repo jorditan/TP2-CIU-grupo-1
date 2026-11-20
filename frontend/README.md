@@ -1,75 +1,38 @@
-# React + TypeScript + Vite
+# UnaHur Anti-Social Net — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Interfaz de usuario en **React + TypeScript (Vite)** para el TP2 de Construcción de Interfaces de Usuario (UNAHUR).
 
-Currently, two official plugins are available:
+## Descripción
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Consume la API REST del backend del monorepo. Incluye:
 
-## React Compiler
+- Login simulado (`nickName` + contraseña fija `123456`) con `useContext` y `localStorage`
+- Registro de usuarios
+- Home con feed de publicaciones
+- Detalle de publicación (`/posts/:id`) con comentarios
+- Perfil del usuario logueado
+- Rutas protegidas para vistas que requieren sesión
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## URL de la API
 
 ```
-
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+http://localhost:3001
 ```
+
+Opcional: definir `VITE_API_URL` en un `.env` del frontend.
+
+## Correr en local
+
+Desde la raíz del repositorio (recomendado), o desde esta carpeta:
+
+```bash
+# Dependencias (desde la raíz)
+npm --prefix frontend ci
+
+# Con el backend ya corriendo en el puerto 3001:
+npm --prefix frontend run dev
+```
+
+La app queda en `http://localhost:5173`.
+
+Instrucciones completas del monorepo (backend + frontend): ver el [README raíz](../README.md).

@@ -4,7 +4,7 @@ import { apiClient } from "./apiClient";
 
 export const postService = {
   getById: async (id: number): Promise<Post> => {
-    const response = await apiClient.get<Post>(\`/posts/\${id}\`);
+    const response = await apiClient.get<Post>(`/posts/${id}`);
     return response.data;
   },
 
@@ -21,13 +21,13 @@ export const postService = {
   },
 
   getByTag: async (tagId: number): Promise<Post[]> => {
-    const response = await apiClient.get<Post[]>(\`/tags/\${tagId}/posts\`);
+    const response = await apiClient.get<Post[]>(`/tags/${tagId}/posts`);
     return response.data;
   },
 
   getPostImages: async (postId: number): Promise<PostImage[]> => {
     const response = await apiClient.get<PostImage[]>(
-      \`/postimages/post/\${postId}\`
+      `/postimages/post/${postId}`
     );
     return response.data;
   },

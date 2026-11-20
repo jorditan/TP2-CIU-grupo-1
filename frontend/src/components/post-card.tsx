@@ -129,13 +129,8 @@ function PostCard({ post }: { post: PostWithDetails }) {
             <span>{post.comments.length}</span>
           </Button>
         </div>
-        {/* Le pasamos el post en state para no tener que volver a pedirlo en el detalle */}
         <Button
-          render={
-            <Link to={`/posts/${post.id}`} state={{ post }}>
-              Ver más
-            </Link>
-          }
+          render={<Link to={`/posts/${post.id}`}>Ver más</Link>}
           className="gap-2 "
         >
           Ver más
