@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import type { Comment } from "@/types/comment";
+import type { PostImage } from "@/types/postImage";
 import { commentService } from "@/services/commentService";
-import { Link, Navigate, useLocation } from "react-router-dom";
+import { postService } from "@/services/postService";
+import { Link, Navigate, useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import type { PostWithDetails } from "@/hooks/usePost";
 import { useComment } from "@/hooks/useComment";
@@ -21,28 +23,82 @@ import PostDetailCard from "./post-detail-card";
 function Post() {
   const { user } = useAuth();
   const { createComment } = useComment();
-  const { state } = useLocation() as { state?: { post?: PostWithDetails } };
+  const { id } = useParams();
 
-  const post = state?.post;
-  const postId = post?.id;
+  const [post, setPost] = useState<PostWithDetails | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (postId === undefined) return;
+    if (!id) return;
 
-    const loadComments = async () => {
-      const data = await commentService.getCommentsByPostId(postId);
-      if (data) setComments(data);
+    let cancelled = false;
+
+    const loadPost = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const postId = Number(id);
+
+        const [basePost, commentsResult, images] = await Promise.all([
+          postService.getById(postId),
+          commentService.getCommentsByPostId(postId),
+          postService.getPostImages(postId),
+        ]);
+
+        if (cancelled) return;
+
+        const loadedComments = (commentsResult ?? []) as Comment[];
+
+        setPost({
+          ...basePost,
+          comments: loadedComments,
+          images: (images ?? []) as PostImage[],
+        });
+        setComments(loadedComments);
+      } catch (err) {
+        console.error("Error al cargar la publicación:", err);
+        if (!cancelled) {
+          setPost(null);
+          setComments([]);
+          setError("No se pudo cargar la publicación. Intentá nuevamente.");
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
     };
 
-    void loadComments();
-  }, [postId]);
+    void loadPost();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [id]);
 
   if (!user) {
     return <Navigate to="/login" replace />;
   }
 
-  if (!post) {
+  if (loading) {
+    return (
+      <section className="flex min-h-screen w-full flex-col items-center gap-6 px-4 py-6">
+        <CardShell className="w-full max-w-lg">
+          <CardSurface>
+            <CardHeader>
+              <CardTitle>Cargando publicación...</CardTitle>
+              <CardDescription>
+                Estamos buscando los detalles de esta publicación.
+              </CardDescription>
+            </CardHeader>
+          </CardSurface>
+        </CardShell>
+      </section>
+    );
+  }
+
+  if (error || !post) {
     return (
       <section className="flex min-h-screen w-full flex-col items-center gap-6 px-4 py-6">
         <CardShell className="w-full max-w-lg">
@@ -50,7 +106,7 @@ function Post() {
             <CardHeader>
               <CardTitle>Publicación no encontrada</CardTitle>
               <CardDescription>
-                No se encontró la publicación solicitada.
+                {error ?? "No se encontró la publicación solicitada."}
               </CardDescription>
             </CardHeader>
           </CardSurface>

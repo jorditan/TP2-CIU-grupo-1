@@ -83,15 +83,12 @@ function Navbar() {
               <NavigationMenuLink render={<Link to="/home">Inicio</Link>} />
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <NavigationMenuLink render={<Link to="/home">Tendencias</Link>} />
-            </NavigationMenuItem>
-            <NavigationMenuItem>
               <NavigationMenuTrigger className="bg-transparent">
                 Categorías
               </NavigationMenuTrigger>
               <NavigationMenuContent>
                 {tags.map((tag) => (
-                  <NavigationMenuLink key={tag.id} href={\`/tags/\${tag.id}\`}>
+                  <NavigationMenuLink key={tag.id} href={`/tags/${tag.id}`}>
                     {tag.name}
                   </NavigationMenuLink>
                 ))}

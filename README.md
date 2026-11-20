@@ -1,58 +1,77 @@
-# TP2 CIU - Grupo 1
+# UnaHur Anti-Social Net — TP2 CIU (Grupo 1)
 
-El repositorio incluye las dos partes del proyecto:
+Frontend en React + TypeScript para la red social **UnaHur Anti-Social Net**, consumiendo la API del backend incluido en este repositorio.
 
-- `frontend/`: aplicación React con Vite.
-- `backend/`: API Express con Sequelize y SQLite.
+Permite iniciar sesión (simulada), registrarse, ver el feed de publicaciones, detallar un post, comentar, ver el perfil propio y (en progreso) crear publicaciones.
 
-## Ejecutar el proyecto
+## Estructura
 
-Desde la carpeta principal, instalar las dependencias:
+- `frontend/`: aplicación React con Vite, TypeScript y Tailwind.
+- `backend/`: API Express + Sequelize + SQLite (caja negra para el frontend).
+
+## URL de la API
+
+Por defecto:
+
+```
+http://localhost:3001
+```
+
+El frontend la toma de `VITE_API_URL` o, si no está definida, usa esa URL (`frontend/src/services/apiClient.ts`).
+
+## Cómo correr en local
+
+### Requisitos
+
+- Node.js 18+ (recomendado)
+- npm
+
+### 1. Instalar dependencias
+
+Desde la carpeta raíz del repo:
 
 ```bash
 npm --prefix backend ci
 npm --prefix frontend ci
 ```
 
-Para configurar el backend, copiar `backend/.env.example` a `backend/.env`.
-La API usa el puerto 3001 por defecto.
-
-En una terminal:
+### 2. Backend
 
 ```bash
 cd backend
-# Solo para crear o reiniciar la base con datos de ejemplo; borra los datos existentes:
+cp .env.example .env
+# Solo para crear o reiniciar la base con datos de ejemplo (borra datos existentes):
 node seed.js
 npm run dev
 ```
 
-En otra terminal, desde la carpeta principal:
+La API queda en `http://localhost:3001`. Detalle de endpoints: `backend/README.md`.
+
+### 3. Frontend
+
+En otra terminal, desde la raíz:
 
 ```bash
 npm --prefix frontend run dev
 ```
 
-Consultar `backend/README.md` para ver los endpoints de la API.
+La app queda en `http://localhost:5173`.
+
+### Login simulado
+
+- Contraseña fija: `123456`
+- Se valida el `nickName` contra `GET /users` y la contraseña en el cliente.
+- La sesión se guarda en `localStorage` y en un contexto global.
 
 ## Sincronizar con GitHub
 
-El repositorio Git se administra desde esta carpeta principal, que contiene
-`frontend/` y `backend/`. Ambos se versionan juntos y comparten el historial.
-
-Antes de comenzar a trabajar:
+El repositorio Git se administra desde esta carpeta principal (`frontend/` y `backend/` juntos).
 
 ```bash
 git pull --ff-only
-```
-
-Para subir cambios de cualquiera de las dos partes:
-
-```bash
 git add .
 git commit -m "Describir los cambios"
 git push
 ```
 
-La sincronización se realiza con `git pull` y `git push`; guardar archivos por sí
-solo no los sube a GitHub. Las dependencias, las variables de entorno privadas y
-la base de datos SQLite local quedan excluidas del repositorio.
+Las dependencias, variables de entorno privadas y la base SQLite local quedan fuera del repo.
