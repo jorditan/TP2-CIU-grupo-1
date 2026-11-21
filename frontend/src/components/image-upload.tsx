@@ -1,5 +1,5 @@
 import * as React from "react";
-import { XIcon } from "lucide-react";
+import { PlusIcon, XIcon } from "lucide-react";
 
 import {
   Attachment,
@@ -11,6 +11,7 @@ import {
   AttachmentMedia,
   AttachmentTitle,
 } from "@/components/ui/attachment";
+import { Button } from "@/components/ui/button";
 import {
   Field,
   FieldDescription,
@@ -20,8 +21,8 @@ import {
 import { Input } from "@/components/ui/input";
 
 type ImageUploadProps = {
-  value: File[];
-  onChange: (files: File[]) => void;
+  value: string[];
+  onChange: (urls: string[]) => void;
   onBlur?: React.FocusEventHandler<HTMLInputElement>;
   name?: string;
   ref?: React.Ref<HTMLInputElement>;
@@ -29,54 +30,21 @@ type ImageUploadProps = {
   error?: string;
 };
 
-function fileKey(file: File) {
-  return JSON.stringify([file.name, file.size, file.lastModified, file.type]);
+function isValidImageUrl(raw: string) {
+  try {
+    const parsed = new URL(raw);
+    return parsed.protocol === "http:" || parsed.protocol === "https:";
+  } catch {
+    return false;
+  }
 }
 
-function ImageAttachment({
-  file,
-  onRemove,
-  disabled,
-}: {
-  file: File;
-  onRemove: () => void;
-  disabled?: boolean;
-}) {
-  const imageRef = React.useRef<HTMLImageElement>(null);
-
-  React.useEffect(() => {
-    const url = URL.createObjectURL(file);
-    if (imageRef.current) imageRef.current.src = url;
-    return () => URL.revokeObjectURL(url);
-  }, [file]);
-
-  return (
-    <Attachment orientation="vertical" state="idle">
-      <AttachmentMedia variant="image">
-        <img ref={imageRef} alt={file.name} />
-      </AttachmentMedia>
-      <AttachmentContent>
-        <AttachmentTitle title={file.name}>{file.name}</AttachmentTitle>
-        <AttachmentDescription>
-          {file.type.replace("image/", "").toUpperCase()} ·{" "}
-          {file.size < 1024 * 1024
-            ? `${Math.ceil(file.size / 1024)} KB`
-            : `${(file.size / (1024 * 1024)).toFixed(1)} MB`}
-        </AttachmentDescription>
-      </AttachmentContent>
-      <AttachmentActions>
-        <AttachmentAction
-          type="button"
-          className="bg-background/90"
-          aria-label={`Quitar ${file.name}`}
-          disabled={disabled}
-          onClick={onRemove}
-        >
-          <XIcon />
-        </AttachmentAction>
-      </AttachmentActions>
-    </Attachment>
-  );
+function getDisplayHost(url: string) {
+  try {
+    return new URL(url).hostname;
+  } catch {
+    return url;
+  }
 }
 
 export function ImageUpload({
@@ -89,58 +57,98 @@ export function ImageUpload({
   error,
 }: ImageUploadProps) {
   const id = React.useId();
-  const [selectionError, setSelectionError] = React.useState<string>();
-  const message = error || selectionError;
+  const [urlInput, setUrlInput] = React.useState("");
+  const [inputError, setInputError] = React.useState<string>();
+  const message = error || inputError;
 
-  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const selected = Array.from(event.currentTarget.files ?? []);
-    const images = selected.filter((file) => file.type.startsWith("image/"));
-    setSelectionError(
-      images.length !== selected.length
-        ? "Solo se pueden seleccionar imágenes."
-        : undefined
-    );
+  const handleAddUrl = () => {
+    const trimmed = urlInput.trim();
+    if (!trimmed) return;
 
-    const files = new Map(value.map((file) => [fileKey(file), file]));
-    images.forEach((file) => files.set(fileKey(file), file));
-    onChange([...files.values()]);
-    // Allow selecting the same file again after removing it.
-    event.currentTarget.value = "";
-  }
+    if (!isValidImageUrl(trimmed)) {
+      setInputError("Ingresá una URL válida (http:// o https://).");
+      return;
+    }
+
+    if (value.includes(trimmed)) {
+      setInputError("Esa imagen ya fue agregada.");
+      return;
+    }
+
+    setInputError(undefined);
+    onChange([...value, trimmed]);
+    setUrlInput("");
+  };
 
   return (
-    <Field data-invalid={!!message}>
-      <FieldLabel htmlFor={id}>Imágenes</FieldLabel>
-      <Input
-        ref={ref}
-        id={id}
-        name={name}
-        type="file"
-        accept="image/*"
-        multiple
-        disabled={disabled}
-        onBlur={onBlur}
-        onChange={handleChange}
-        aria-invalid={!!message}
-        aria-describedby={`${id}-description${message ? ` ${id}-error` : ""}`}
-      />
+    <Field data-invalid={Boolean(message)}>
+      <FieldLabel htmlFor={id}>Imágenes (URL)</FieldLabel>
+      <div className="flex gap-2">
+        <Input
+          ref={ref}
+          id={id}
+          name={name}
+          type="url"
+          placeholder="https://ejemplo.com/imagen.jpg"
+          value={urlInput}
+          disabled={disabled}
+          onBlur={onBlur}
+          onChange={(e) => {
+            setUrlInput(e.target.value);
+            if (inputError) setInputError(undefined);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              handleAddUrl();
+            }
+          }}
+          aria-invalid={Boolean(message)}
+          aria-describedby={`${id}-description${message ? ` ${id}-error` : ""}`}
+        />
+        <Button
+          type="button"
+          variant="outline"
+          disabled={disabled || !urlInput.trim()}
+          onClick={handleAddUrl}
+        >
+          <PlusIcon />
+          Agregar
+        </Button>
+      </div>
       <FieldDescription id={`${id}-description`}>
-        Selecciona una o varias imágenes. Puedes agregar más o quitarlas antes
+        Pegá una o varias URLs de imágenes. Podés agregar más o quitarlas antes
         de publicar.
       </FieldDescription>
       {message && <FieldError id={`${id}-error`}>{message}</FieldError>}
       {value.length > 0 && (
-        <AttachmentGroup aria-label="Imágenes seleccionadas">
-          {value.map((file) => (
-            <ImageAttachment
-              key={fileKey(file)}
-              file={file}
-              disabled={disabled}
-              onRemove={() => {
-                setSelectionError(undefined);
-                onChange(value.filter((image) => image !== file));
-              }}
-            />
+        <AttachmentGroup aria-label="Imágenes agregadas">
+          {value.map((url, idx) => (
+            <Attachment key={url} orientation="vertical" state="idle">
+              <AttachmentMedia variant="image">
+                <img src={url} alt={`Imagen ${idx + 1}`} />
+              </AttachmentMedia>
+              <AttachmentContent>
+                <AttachmentTitle title={url}>Imagen {idx + 1}</AttachmentTitle>
+                <AttachmentDescription>
+                  {getDisplayHost(url)}
+                </AttachmentDescription>
+              </AttachmentContent>
+              <AttachmentActions>
+                <AttachmentAction
+                  type="button"
+                  className="bg-background/90"
+                  aria-label={`Quitar imagen ${idx + 1}`}
+                  disabled={disabled}
+                  onClick={() => {
+                    setInputError(undefined);
+                    onChange(value.filter((item) => item !== url));
+                  }}
+                >
+                  <XIcon />
+                </AttachmentAction>
+              </AttachmentActions>
+            </Attachment>
           ))}
         </AttachmentGroup>
       )}

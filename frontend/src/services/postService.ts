@@ -31,4 +31,21 @@ export const postService = {
     );
     return response.data;
   },
+
+  createPost: async (payload: {
+    description: string;
+    userId: number;
+    tagIds: number[];
+  }): Promise<Post> => {
+    const response = await apiClient.post<Post>("/posts", payload);
+    return response.data;
+  },
+
+  createPostImage: async (payload: {
+    url: string;
+    postId: number;
+  }): Promise<PostImage> => {
+    const response = await apiClient.post<PostImage>("/postimages", payload);
+    return response.data;
+  },
 };

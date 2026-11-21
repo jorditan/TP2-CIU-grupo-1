@@ -1,6 +1,6 @@
+import { useEffect, useMemo, useState } from "react";
 import { type Tag } from "@/types/tag";
 import { tagService } from "@/services/tagService";
-import { useEffect, useState } from "react";
 
 export const useTag = () => {
   const [tags, setTags] = useState<Tag[]>([]);
@@ -9,5 +9,7 @@ export const useTag = () => {
     tagService().getAll().then(setTags);
   }, []);
 
-  return { tags };
+  const tagNames = useMemo(() => tags.map((tag) => tag.name), [tags]);
+
+  return { tags, tagNames };
 };

@@ -10,9 +10,9 @@ export interface PostWithDetails extends Post {
   images: PostImage[];
 }
 
-export const usePost = () => {
+export const usePost = (userId?: number | null) => {
   const [posts, setPosts] = useState<PostWithDetails[] | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(userId !== null);
   const [error, setError] = useState<string | null>(null);
 
   const countComments = (postId: number): number => {
@@ -21,11 +21,20 @@ export const usePost = () => {
   };
 
   useEffect(() => {
+    if (userId === null) return;
+
+    let cancelled = false;
+
     const fetchPostsWithDetails = async () => {
       try {
         setLoading(true);
-        // 1: obtiene todos los posts base
-        const basePosts = await postService.getAll();
+        setError(null);
+
+        // 1: obtiene todos los posts base o solo los del usuario
+        const basePosts =
+          typeof userId === "number"
+            ? await postService.getByUserId(userId)
+            : await postService.getAll();
 
         // 2: por cada post, buscar sus comentarios e imágenes en paralelo
         const postsWithDetails = await Promise.all(
@@ -39,23 +48,40 @@ export const usePost = () => {
 
             return {
               ...post,
-              comments,
-              images,
+              comments: comments ?? [],
+              images: images ?? [],
             };
           })
         );
 
-        setPosts(postsWithDetails);
+        if (!cancelled) setPosts(postsWithDetails);
       } catch (err) {
-        setError("Error al cargar los posts y sus detalles");
+        if (!cancelled) {
+          setError("Error al cargar los posts y sus detalles");
+        }
         console.error(err);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
 
-    fetchPostsWithDetails();
-  }, []); // array para que se ejecute solo al montar el componente
+    void fetchPostsWithDetails();
 
-  return { posts, loading, error, countComments };
+    const handlePostsUpdated = () => {
+      void fetchPostsWithDetails();
+    };
+    window.addEventListener("posts:updated", handlePostsUpdated);
+
+    return () => {
+      cancelled = true;
+      window.removeEventListener("posts:updated", handlePostsUpdated);
+    };
+  }, [userId]);
+
+  return {
+    posts: userId === null ? [] : posts,
+    loading: userId === null ? false : loading,
+    error: userId === null ? null : error,
+    countComments,
+  };
 };

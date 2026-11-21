@@ -1,15 +1,8 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { FileText, LogOut } from "lucide-react";
 
-import { useAuth } from "@/context/AuthContext";
-import { postService } from "@/services/postService";
-import { commentService } from "@/services/commentService";
+import { useProfile } from "@/hooks/useProfile";
 import PostCard from "@/components/post-card";
 import { Button } from "@/components/ui/button";
-import type { PostWithDetails } from "@/hooks/usePost";
-import type { Comment } from "@/types/comment";
-import type { PostImage } from "@/types/postImage";
 
 import {
   CardDescription,
@@ -20,63 +13,7 @@ import {
 } from "@/components/ui/card";
 
 function Profile() {
-  const { user, logoutUser } = useAuth();
-  const navigate = useNavigate();
-  const [userPosts, setUserPosts] = useState<PostWithDetails[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!user) return;
-
-    let cancelled = false;
-
-    const loadUserPosts = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const posts = await postService.getByUserId(user.id);
-
-        const postsWithDetails = await Promise.all(
-          posts.map(async (post) => {
-            const [commentsResult, images] = await Promise.all([
-              commentService.getCommentsByPostId(post.id),
-              postService.getPostImages(post.id),
-            ]);
-
-            return {
-              ...post,
-              comments: (commentsResult ?? []) as Comment[],
-              images: (images ?? []) as PostImage[],
-            };
-          })
-        );
-
-        if (!cancelled) setUserPosts(postsWithDetails);
-      } catch (err) {
-        console.error("Error al cargar las publicaciones del usuario:", err);
-        if (!cancelled) {
-          setError(
-            "No se pudieron cargar tus publicaciones. Intentá nuevamente."
-          );
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    };
-
-    void loadUserPosts();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [user]);
-
-  const handleLogout = () => {
-    logoutUser();
-    navigate("/login", { replace: true });
-  };
+  const { user, userPosts, loading, error, handleLogout } = useProfile();
 
   if (!user) {
     return null;

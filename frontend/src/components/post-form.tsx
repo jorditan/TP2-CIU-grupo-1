@@ -1,14 +1,15 @@
 "use client";
 
-import * as React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import { toast } from "sonner";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
 import { ImageUpload } from "@/components/image-upload";
+import { TagSelect } from "@/components/tag-select";
+import { useCreatePost } from "@/hooks/useCreatePost";
 import {
+  DialogClose,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -30,13 +31,19 @@ import {
 const formSchema = z.object({
   description: z
     .string()
-    .min(20, "Description must be at least 20 characters.")
-    .max(240, "Description must be at most 240 characters."),
-  images: z.array(z.instanceof(File)),
+    .min(20, "La descripción debe tener al menos 20 caracteres.")
+    .max(240, "La descripción debe tener como máximo 240 caracteres."),
+  images: z.array(z.string().url("Ingresá una URL válida.")),
   tags: z.array(z.string().min(1)),
 });
 
-export function PostForm() {
+type PostFormProps = {
+  onSuccess?: () => void;
+};
+
+export function PostForm({ onSuccess }: PostFormProps) {
+  const { createPost, isCreating } = useCreatePost();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -46,31 +53,15 @@ export function PostForm() {
     },
   });
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
-    toast("You submitted the following values:", {
-      description: (
-        <pre className="mt-2 w-[320px] overflow-x-auto rounded-md bg-code p-4 text-code-foreground">
-          <code>
-            {JSON.stringify(
-              data,
-              (_key, value) =>
-                value instanceof File
-                  ? { name: value.name, type: value.type, size: value.size }
-                  : value,
-              2
-            )}
-          </code>
-        </pre>
-      ),
-      position: "bottom-right",
-      classNames: {
-        content: "flex flex-col gap-2",
-      },
-      style: {
-        "--border-radius": "calc(var(--radius)  + 4px)",
-      } as React.CSSProperties,
-    });
+  async function onSubmit(data: z.infer<typeof formSchema>) {
+    const ok = await createPost(data);
+    if (ok) {
+      form.reset();
+      onSuccess?.();
+    }
   }
+
+  const isBusy = form.formState.isSubmitting || isCreating;
 
   return (
     <>
@@ -100,6 +91,7 @@ export function PostForm() {
                     id="form-rhf-demo-description"
                     placeholder="Descripción de la publicación..."
                     rows={6}
+                    disabled={isBusy}
                     className="min-h-24 resize-none"
                     aria-invalid={fieldState.invalid}
                   />
@@ -124,7 +116,7 @@ export function PostForm() {
             render={({ field, fieldState }) => (
               <ImageUpload
                 {...field}
-                disabled={form.formState.isSubmitting}
+                disabled={isBusy}
                 error={fieldState.error?.message}
               />
             )}
@@ -132,27 +124,29 @@ export function PostForm() {
         </FieldGroup>
 
         <FieldGroup>
-            <label>
-              <select name="tags" id="tags">
-              <option value="arte">arte</option>
-              <option value="programacion">programacion</option>
-              <option value="tecno">tecno</option>
-              <option value="pelicula">pelicula</option>
-              <option value="unahur">unahur</option>
-              </select>
-            </label>
+          <Controller
+            name="tags"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <TagSelect
+                value={field.value}
+                onChange={field.onChange}
+                disabled={isBusy}
+                error={fieldState.error?.message}
+              />
+            )}
+          />
         </FieldGroup>
       </form>
       <DialogFooter>
-        <Button type="button" variant="outline" onClick={() => form.reset()}>
-          Cancelar
-        </Button>
-        <Button
-          disabled={form.formState.isSubmitting}
-          type="submit"
-          form="form-rhf-demo"
+        <DialogClose
+          render={<Button type="button" variant="outline" />}
+          onClick={() => form.reset()}
         >
-          Crear
+          Cancelar
+        </DialogClose>
+        <Button disabled={isBusy} type="submit" form="form-rhf-demo">
+          {isBusy ? "Creando..." : "Crear"}
         </Button>
       </DialogFooter>
     </>

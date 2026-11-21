@@ -39,6 +39,7 @@ function Navbar() {
   const { tags } = useTag();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [postDialogOpen, setPostDialogOpen] = useState(false);
 
   return (
     <header className="sticky top-3 z-50 mx-auto w-[calc(100%-2rem)] max-w-4xl rounded-2xl bg-card-shell/85 p-1.5 ring-1 ring-foreground/10 shadow-[0_8px_24px_-6px_rgb(0_0_0/0.12)] backdrop-blur-md supports-[backdrop-filter]:bg-card-shell/75 dark:ring-white/[0.07] dark:shadow-[0_12px_32px_-8px_rgb(0_0_0/0.6)]">
@@ -123,10 +124,10 @@ function Navbar() {
         <div className="flex items-center gap-2">
           <ModeToggle />
           {user && (
-            <Dialog>
+            <Dialog open={postDialogOpen} onOpenChange={setPostDialogOpen}>
               <DialogTrigger render={<Button>Crear publicación</Button>} />
               <DialogContent className="sm:max-w-md">
-                <PostForm />
+                <PostForm onSuccess={() => setPostDialogOpen(false)} />
               </DialogContent>
             </Dialog>
           )}
