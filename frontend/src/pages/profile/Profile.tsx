@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
-import { FileText } from "lucide-react";
+import { Navigate, useNavigate } from "react-router-dom";
+import { FileText, LogOut } from "lucide-react";
 
 import { useAuth } from "@/context/AuthContext";
 import { postService } from "@/services/postService";
 import { commentService } from "@/services/commentService";
 import PostCard from "@/components/post-card";
+import { Button } from "@/components/ui/button";
 import type { PostWithDetails } from "@/hooks/usePost";
 import type { Comment } from "@/types/comment";
 import type { PostImage } from "@/types/postImage";
+
 import {
   CardDescription,
   CardHeader,
@@ -18,7 +20,8 @@ import {
 } from "@/components/ui/card";
 
 function Profile() {
-  const { user } = useAuth();
+  const { user, logoutUser } = useAuth();
+  const navigate = useNavigate();
   const [userPosts, setUserPosts] = useState<PostWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -54,7 +57,9 @@ function Profile() {
       } catch (err) {
         console.error("Error al cargar las publicaciones del usuario:", err);
         if (!cancelled) {
-          setError("No se pudieron cargar tus publicaciones. Intentá nuevamente.");
+          setError(
+            "No se pudieron cargar tus publicaciones. Intentá nuevamente."
+          );
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -67,6 +72,11 @@ function Profile() {
       cancelled = true;
     };
   }, [user]);
+
+  const handleLogout = () => {
+    logoutUser();
+    navigate("/login", { replace: true });
+  };
 
   if (!user) {
     return <Navigate to="/login" replace />;
@@ -86,6 +96,12 @@ function Profile() {
                 <p>Usuario: {user.nickName}</p>
                 <p>Correo: {user.email}</p>
                 <p>Publicaciones: {loading ? "..." : userPosts.length}</p>
+              </div>
+              <div className="pt-3">
+                <Button variant="destructive" size="sm" onClick={handleLogout}>
+                  <LogOut />
+                  Cerrar sesión
+                </Button>
               </div>
             </CardHeader>
           </CardSurface>
