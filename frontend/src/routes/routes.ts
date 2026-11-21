@@ -5,6 +5,7 @@ import RegisterPage from "@/pages/register/RegisterPage";
 import Profile from "@/pages/profile/Profile";
 import Post from "@/components/post";
 import App from "@/App";
+import ProtectedRoute from "@/components/protected-route";
 
 const routes = [
   {
@@ -28,12 +29,17 @@ const routes = [
         Component: Home,
       },
       {
-        path: "/profile",
-        Component: Profile,
+        path: "/post/:id",
+        Component: Post,
       },
       {
-        path: "/posts/:id",
-        Component: Post,
+        Component: ProtectedRoute,
+        children: [
+          {
+            path: "/profile",
+            Component: Profile,
+          },
+        ],
       },
     ],
   },

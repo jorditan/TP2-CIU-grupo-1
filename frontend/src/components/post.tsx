@@ -3,7 +3,7 @@ import type { Comment } from "@/types/comment";
 import type { PostImage } from "@/types/postImage";
 import { commentService } from "@/services/commentService";
 import { postService } from "@/services/postService";
-import { Link, Navigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import type { PostWithDetails } from "@/hooks/usePost";
 import { useComment } from "@/hooks/useComment";
@@ -77,10 +77,6 @@ function Post() {
     };
   }, [id]);
 
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-
   if (loading) {
     return (
       <section className="flex min-h-screen w-full flex-col items-center gap-6 px-4 py-6">
@@ -131,15 +127,26 @@ function Post() {
         <PostDetailCard post={post} commentCount={comments.length} />
 
         <div className="flex flex-col gap-4">
-          <CommentForm
-            placeholder="Escribe un comentario..."
-            onSubmit={async (comment) => {
-              await createComment(post.id, comment, user.id);
+          {user ? (
+            <CommentForm
+              placeholder="Escribe un comentario..."
+              onSubmit={async (comment) => {
+                await createComment(post.id, comment, user.id);
 
-              const data = await commentService.getCommentsByPostId(post.id);
-              if (data) setComments(data);
-            }}
-          />
+                const data = await commentService.getCommentsByPostId(post.id);
+                if (data) setComments(data);
+              }}
+            />
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              <Link
+                className="text-sm underline-offset-4 underline"
+                to="/login"
+              >
+                Iniciá sesión para comentar este post
+              </Link>
+            </p>
+          )}
 
           <CommentList comments={comments} />
         </div>
