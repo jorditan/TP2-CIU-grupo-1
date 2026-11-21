@@ -26,3 +26,9 @@ export interface CreatePostPayload {
   userId: number;
   tagIds: number[];
 }
+
+export interface CreatePostInput {
+  description: string;
+  tagIds: number[];
+  imageUrls: string[];
+}
