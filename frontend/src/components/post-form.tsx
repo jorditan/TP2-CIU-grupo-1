@@ -127,6 +127,18 @@ export function PostForm() {
             )}
           />
         </FieldGroup>
+
+        <FieldGroup>
+          <label htmlFor="etiquetas">
+            <select name="tags" id="tags">
+              <option value="arte">arte</option>
+              <option value="programacion">programacion</option>
+              <option value="tecno">tecno</option>
+              <option value="pelicula">pelicula</option>
+              <option value="unahur">unahur</option>
+            </select>
+          </label>
+        </FieldGroup>
       </form>
       <DialogFooter>
         <Button type="button" variant="outline" onClick={() => form.reset()}>
