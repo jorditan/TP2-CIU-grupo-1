@@ -20,3 +20,9 @@ export interface Post {
   Tags?: Tag[];
   PostImages?: PostImage[];
 }
+
+export interface CreatePostPayload {
+  description: string;
+  userId: number;
+  tagIds: number[];
+}
