@@ -33,6 +33,7 @@ const formSchema = z.object({
     .min(20, "Description must be at least 20 characters.")
     .max(240, "Description must be at most 240 characters."),
   images: z.array(z.instanceof(File)),
+  tags: z.array(z.string().min(1)),
 });
 
 export function PostForm() {
@@ -41,6 +42,7 @@ export function PostForm() {
     defaultValues: {
       description: "",
       images: [],
+      tags: [],
     },
   });
 
@@ -114,6 +116,7 @@ export function PostForm() {
             )}
           />
         </FieldGroup>
+
         <FieldGroup>
           <Controller
             name="images"
@@ -129,15 +132,15 @@ export function PostForm() {
         </FieldGroup>
 
         <FieldGroup>
-          <label htmlFor="etiquetas">
-            <select name="tags" id="tags">
+            <label>
+              <select name="tags" id="tags">
               <option value="arte">arte</option>
               <option value="programacion">programacion</option>
               <option value="tecno">tecno</option>
               <option value="pelicula">pelicula</option>
               <option value="unahur">unahur</option>
-            </select>
-          </label>
+              </select>
+            </label>
         </FieldGroup>
       </form>
       <DialogFooter>
