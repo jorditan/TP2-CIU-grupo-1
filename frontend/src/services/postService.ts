@@ -1,4 +1,4 @@
-import type { Post } from "@/types/post";
+import type { CreatePostPayload, Post } from "@/types/post";
 import type { PostImage } from "@/types/postImage";
 import { apiClient } from "./apiClient";
 
@@ -29,6 +29,19 @@ export const postService = {
     const response = await apiClient.get<PostImage[]>(
       `/postimages/post/${postId}`
     );
+    return response.data;
+  },
+
+  createImage: async (url: string, postId: number): Promise<PostImage> => {
+    const response = await apiClient.post<PostImage>("/postimages", {
+      url,
+      postId,
+    });
+    return response.data;
+  },
+
+  create: async (payload: CreatePostPayload): Promise<Post> => {
+    const response = await apiClient.post<Post>("/posts", payload);
     return response.data;
   },
 };
