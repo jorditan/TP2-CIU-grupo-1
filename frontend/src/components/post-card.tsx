@@ -27,7 +27,9 @@ function PostCard({ post }: { post: PostWithDetails }) {
 
   const handle = `@${displayName.toLowerCase().replace(/\s+/g, "")}`;
   const initials = displayName.slice(0, 2).toUpperCase();
-  const postImages = post.images?.length ? post.images : (post.PostImages ?? []);
+  const postImages = post.images?.length
+    ? post.images
+    : (post.PostImages ?? []);
 
   return (
     <CardShell className="w-full max-w-lg">
@@ -130,7 +132,7 @@ function PostCard({ post }: { post: PostWithDetails }) {
           </Button>
         </div>
         <Button
-          render={<Link to={`/posts/${post.id}`}>Ver más</Link>}
+          render={<Link to={`/post/${post.id}`}>Ver más</Link>}
           className="gap-2 "
         >
           Ver más

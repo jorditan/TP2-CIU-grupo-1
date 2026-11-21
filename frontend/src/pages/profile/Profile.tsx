@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { FileText, LogOut } from "lucide-react";
 
 import { useAuth } from "@/context/AuthContext";
@@ -79,7 +79,7 @@ function Profile() {
   };
 
   if (!user) {
-    return <Navigate to="/login" replace />;
+    return null;
   }
 
   return (
