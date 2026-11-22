@@ -54,7 +54,13 @@ export const usePost = (userId?: number | null) => {
           })
         );
 
-        if (!cancelled) setPosts(postsWithDetails);
+        const sortedPosts = [...postsWithDetails].sort(
+          (a, b) =>
+            new Date(b.createdAt ?? 0).getTime() -
+              new Date(a.createdAt ?? 0).getTime() || b.id - a.id
+        );
+
+        if (!cancelled) setPosts(sortedPosts);
       } catch (err) {
         if (!cancelled) {
           setError("Error al cargar los posts y sus detalles");

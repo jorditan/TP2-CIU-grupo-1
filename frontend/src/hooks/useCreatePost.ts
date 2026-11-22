@@ -43,6 +43,7 @@ export const useCreatePost = () => {
         );
       }
 
+      window.dispatchEvent(new Event("posts:updated"));
       toast.success("¡Publicación creada con éxito!");
       return true;
     } catch (error) {

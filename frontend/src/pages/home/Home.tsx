@@ -1,9 +1,11 @@
 import { useAuth } from "@/context/AuthContext";
 import { usePost } from "@/hooks/usePost";
+import { useTag } from "@/hooks/useTag";
 import { getCarouselItems, getGreeting, GROUP_MEMBERS } from "@/lib/utils";
 import PostCard from "@/components/post-card";
 import { Avatar, AvatarFallback, AvatarGroup } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardAction,
@@ -35,21 +37,34 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-import { FileText } from "lucide-react";
+import { FileText, X } from "lucide-react";
+import { StaggerList, Swap } from "@/components/fade";
+import { useSearchParams } from "react-router-dom";
 
 function Home() {
   const { user } = useAuth();
   const { posts, loading } = usePost();
+  const { tags } = useTag();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const selectedTagId = Number(searchParams.get("tag")) || null;
+  const selectedTag = tags.find((t) => t.id === selectedTagId) ?? null;
+
+  const filteredPosts = selectedTagId
+    ? (posts ?? []).filter((post) =>
+        post.Tags?.some((tag) => tag.id === selectedTagId)
+      )
+    : (posts ?? []);
 
   const postCount = posts?.length ?? 0;
   const carouselItems = getCarouselItems(postCount);
 
   return (
-    <section className="flex w-full flex-col items-center gap-6 min-h-screen px-4 py-12">
+    <section className="flex min-h-screen w-full flex-col items-center gap-6 px-3 py-6 sm:px-4 sm:py-10">
       <div className="flex w-full max-w-lg flex-col gap-5">
         {user && (
           <div className="flex items-center justify-between px-1">
-            <h1 className="text-xl font-medium tracking-tight text-foreground">
+            <h1 className="min-w-0 break-words text-lg font-medium tracking-tight text-foreground sm:text-xl">
               {getGreeting()}, {user.nickName}
             </h1>
           </div>
@@ -77,7 +92,7 @@ function Home() {
                   </CardSurface>
                   <CardFooter className="justify-between border-t-0 bg-transparent px-2.5 pt-2 pb-1">
                     {item.showMembers ? (
-                      <div className="flex items-center gap-2.5">
+                      <div className="flex flex-wrap items-center gap-2.5">
                         <AvatarGroup>
                           {GROUP_MEMBERS.map((member) => (
                             <Tooltip key={member.name}>
@@ -114,11 +129,11 @@ function Home() {
             ))}
           </CarouselContent>
 
-          <div className="mt-2.5 flex items-center justify-between px-1">
-            <span className="text-xs text-muted-foreground">
+          <div className="mt-2.5 flex items-center justify-between gap-2 px-1">
+            <span className="min-w-0 text-xs leading-snug text-muted-foreground">
               Sobre nosotros · Deslizá con las flechas
             </span>
-            <div className="flex items-center gap-1.5">
+            <div className="flex shrink-0 items-center gap-1.5">
               <CarouselPrevious className="static translate-y-0 size-7" />
               <CarouselNext className="static translate-y-0 size-7" />
             </div>
@@ -137,34 +152,72 @@ function Home() {
           <Separator className="flex-1" />
         </div>
 
-        {loading ? (
-          <Card className="w-full">
-            <CardHeader>
-              <CardTitle>Cargando publicaciones...</CardTitle>
-              <CardDescription>
-                Obteniendo las últimas novedades de la comunidad.
-              </CardDescription>
-            </CardHeader>
-          </Card>
-        ) : posts && posts.length > 0 ? (
-          <div className="flex flex-col items-center gap-4">
-            {posts.map((p) => (
-              <PostCard key={p.id} post={p} />
-            ))}
+        {selectedTagId && (
+          <div className="flex items-center justify-between gap-2 rounded-lg border bg-card/60 px-3 py-2 text-xs">
+            <span className="text-muted-foreground">
+              Filtrando por etiqueta:{" "}
+              <Badge variant="secondary" className="ml-1 capitalize">
+                {selectedTag?.name ?? `#${selectedTagId}`}
+              </Badge>
+            </span>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 gap-1 px-2 text-xs"
+              onClick={() => setSearchParams({})}
+            >
+              <X className="size-3.5" />
+              Limpiar
+            </Button>
           </div>
-        ) : (
-          <Empty>
-            <EmptyHeader>
-              <EmptyMedia variant="icon">
-                <FileText className="h-8 w-8 opacity-50" />
-              </EmptyMedia>
-              <EmptyTitle>Aún no hay publicaciones</EmptyTitle>
-              <EmptyDescription>
-                Cuando alguien comparta una publicación aparecerá acá.
-              </EmptyDescription>
-            </EmptyHeader>
-          </Empty>
         )}
+
+        <Swap
+          view={
+            loading
+              ? "loading"
+              : filteredPosts.length
+                ? `feed-${selectedTagId ?? "all"}`
+                : `empty-${selectedTagId ?? "all"}`
+          }
+          className="w-full"
+        >
+          {loading ? (
+            <Card className="w-full">
+              <CardHeader>
+                <CardTitle>Cargando publicaciones...</CardTitle>
+                <CardDescription>
+                  Obteniendo las últimas novedades de la comunidad.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          ) : filteredPosts.length > 0 ? (
+            <StaggerList
+              items={filteredPosts}
+              getKey={(post) => post.id}
+              className="flex w-full flex-col items-center gap-4"
+              renderItem={(post) => <PostCard post={post} />}
+            />
+          ) : (
+            <Empty>
+              <EmptyHeader>
+                <EmptyMedia variant="icon">
+                  <FileText className="h-8 w-8 opacity-50" />
+                </EmptyMedia>
+                <EmptyTitle>
+                  {selectedTagId
+                    ? "No hay publicaciones con esta etiqueta"
+                    : "Aún no hay publicaciones"}
+                </EmptyTitle>
+                <EmptyDescription>
+                  {selectedTagId
+                    ? "Probá con otra categoría o limpiá el filtro para ver todas."
+                    : "Cuando alguien comparta una publicación aparecerá acá."}
+                </EmptyDescription>
+              </EmptyHeader>
+            </Empty>
+          )}
+        </Swap>
       </div>
     </section>
   );

@@ -9,13 +9,6 @@ import { ImageUpload } from "@/components/image-upload";
 import { TagSelect } from "@/components/tag-select";
 import { useCreatePost } from "@/hooks/useCreatePost";
 import {
-  DialogClose,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
   Field,
   FieldError,
   FieldGroup,
@@ -31,7 +24,8 @@ import {
 const formSchema = z.object({
   description: z
     .string()
-    .min(20, "La descripción debe tener al menos 20 caracteres.")
+    .trim()
+    .min(1, "La descripción es obligatoria.")
     .max(240, "La descripción debe tener como máximo 240 caracteres."),
   images: z.array(z.string().url("Ingresá una URL válida.")),
   tags: z.array(z.string().min(1)),
@@ -39,9 +33,10 @@ const formSchema = z.object({
 
 type PostFormProps = {
   onSuccess?: () => void;
+  onCancel?: () => void;
 };
 
-export function PostForm({ onSuccess }: PostFormProps) {
+export function PostForm({ onSuccess, onCancel }: PostFormProps) {
   const { createPost, isCreating } = useCreatePost();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -64,18 +59,11 @@ export function PostForm({ onSuccess }: PostFormProps) {
   const isBusy = form.formState.isSubmitting || isCreating;
 
   return (
-    <>
-      <DialogHeader>
-        <DialogTitle>Crear publicación</DialogTitle>
-        <DialogDescription>
-          Ingresa la información necesaria para crear una publicación.
-        </DialogDescription>
-      </DialogHeader>
-      <form
-        id="form-rhf-demo"
-        className="flex min-w-0 flex-col gap-5"
-        onSubmit={form.handleSubmit(onSubmit)}
-      >
+    <form
+      id="form-rhf-demo"
+      className="flex min-w-0 flex-col gap-5"
+      onSubmit={form.handleSubmit(onSubmit)}
+    >
         <FieldGroup>
           <Controller
             name="description"
@@ -137,18 +125,21 @@ export function PostForm({ onSuccess }: PostFormProps) {
             )}
           />
         </FieldGroup>
+        <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => {
+              form.reset();
+              onCancel?.();
+            }}
+          >
+            Cancelar
+          </Button>
+          <Button disabled={isBusy} type="submit" form="form-rhf-demo">
+            {isBusy ? "Creando..." : "Crear"}
+          </Button>
+        </div>
       </form>
-      <DialogFooter>
-        <DialogClose
-          render={<Button type="button" variant="outline" />}
-          onClick={() => form.reset()}
-        >
-          Cancelar
-        </DialogClose>
-        <Button disabled={isBusy} type="submit" form="form-rhf-demo">
-          {isBusy ? "Creando..." : "Crear"}
-        </Button>
-      </DialogFooter>
-    </>
   );
 }

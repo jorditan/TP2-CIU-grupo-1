@@ -79,7 +79,7 @@ function Post() {
 
   if (loading) {
     return (
-      <section className="flex min-h-screen w-full flex-col items-center gap-6 px-4 py-6">
+      <section className="flex min-h-screen w-full flex-col items-center gap-6 px-3 py-4 sm:px-4 sm:py-6">
         <CardShell className="w-full max-w-lg">
           <CardSurface>
             <CardHeader>
@@ -96,7 +96,7 @@ function Post() {
 
   if (error || !post) {
     return (
-      <section className="flex min-h-screen w-full flex-col items-center gap-6 px-4 py-6">
+      <section className="flex min-h-screen w-full flex-col items-center gap-6 px-3 py-4 sm:px-4 sm:py-6">
         <CardShell className="w-full max-w-lg">
           <CardSurface>
             <CardHeader>
@@ -112,16 +112,16 @@ function Post() {
   }
 
   return (
-    <section className="flex min-h-screen w-full flex-col items-center gap-6 px-4 py-6">
+    <section className="flex min-h-screen w-full flex-col items-center gap-6 px-3 py-4 sm:px-4 sm:py-6">
       <div className="flex w-full max-w-lg flex-col gap-6">
         <Button
-          variant="ghost"
-          size="sm"
+          variant="outline"
+          size="icon"
+          aria-label="Volver al inicio"
           render={<Link to="/home" />}
-          className="w-fit gap-2 text-muted-foreground hover:text-foreground"
+          className="text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="size-4" />
-          Volver al inicio
         </Button>
 
         <PostDetailCard post={post} commentCount={comments.length} />
