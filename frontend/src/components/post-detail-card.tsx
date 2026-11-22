@@ -39,22 +39,24 @@ export default function PostDetailCard({
     : (post.PostImages ?? []);
   return (
     <CardShell className="w-full">
-      <CardSurface className="gap-4 py-5">
-        <CardHeader className="items-center px-5">
-          <div className="flex items-center gap-3.5">
-            <Avatar size="lg">
+      <CardSurface className="gap-4 py-4 sm:py-5">
+        <CardHeader className="items-center gap-2 px-4 sm:px-5">
+          <div className="flex min-w-0 items-center gap-3 sm:gap-3.5">
+            <Avatar size="lg" className="shrink-0">
               <AvatarImage src="" alt={displayName} />
               <AvatarFallback>{initials}</AvatarFallback>
             </Avatar>
-            <div className="flex flex-col leading-tight">
-              <span className="text-base font-semibold text-foreground">
+            <div className="flex min-w-0 flex-col leading-tight">
+              <span className="truncate text-sm font-semibold text-foreground sm:text-base">
                 {displayName}
               </span>
-              <span className="text-xs text-muted-foreground">{handle}</span>
+              <span className="truncate text-xs text-muted-foreground">
+                {handle}
+              </span>
             </div>
           </div>
-          <CardAction>
-            <small className="text-xs text-muted-foreground">
+          <CardAction className="shrink-0">
+            <small className="whitespace-nowrap text-xs text-muted-foreground">
               {formatDate(post.createdAt)}
             </small>
           </CardAction>
@@ -65,7 +67,7 @@ export default function PostDetailCard({
             <img
               src={postImages[0].url}
               alt={post.title || "Imagen del post"}
-              className="max-h-96 w-full object-cover"
+              className="max-h-72 w-full object-cover sm:max-h-96"
             />
           </div>
         )}
@@ -79,13 +81,13 @@ export default function PostDetailCard({
                     <img
                       src={img.url}
                       alt={`${post.title || "Imagen del post"} ${idx + 1}`}
-                      className="max-h-96 w-full object-cover"
+                      className="max-h-72 w-full object-cover sm:max-h-96"
                     />
                   </div>
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <div className="mt-2 flex items-center justify-between px-5">
+            <div className="mt-2 flex items-center justify-between px-4 sm:px-5">
               <CarouselCounter />
               <div className="flex items-center gap-1.5">
                 <CarouselPrevious className="static translate-y-0 size-7" />
@@ -95,13 +97,13 @@ export default function PostDetailCard({
           </Carousel>
         )}
 
-        <CardContent className="flex flex-col gap-3 px-5">
+        <CardContent className="flex flex-col gap-3 px-4 sm:px-5">
           {post.title && (
-            <h1 className="font-heading text-xl font-semibold leading-snug text-foreground">
+            <h1 className="break-words font-heading text-lg font-semibold leading-snug text-foreground sm:text-xl">
               {post.title}
             </h1>
           )}
-          <p className="text-base leading-relaxed text-foreground">
+          <p className="break-words text-sm leading-relaxed text-foreground sm:text-base">
             {post.description}
           </p>
           {post.Tags && post.Tags.length > 0 && (

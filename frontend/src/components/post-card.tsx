@@ -34,21 +34,23 @@ function PostCard({ post }: { post: PostWithDetails }) {
   return (
     <CardShell className="w-full max-w-lg">
       <CardSurface>
-        <CardHeader className="items-center">
-          <div className="flex items-center gap-3">
-            <Avatar size="lg">
+        <CardHeader className="items-center gap-2">
+          <div className="flex min-w-0 items-center gap-3">
+            <Avatar size="lg" className="shrink-0">
               <AvatarImage src="" alt={displayName} />
               <AvatarFallback>{initials}</AvatarFallback>
             </Avatar>
-            <div className="flex flex-col leading-tight">
-              <span className="font-semibold text-sm text-foreground">
+            <div className="flex min-w-0 flex-col leading-tight">
+              <span className="truncate font-semibold text-sm text-foreground">
                 {displayName}
               </span>
-              <span className="text-xs text-muted-foreground">{handle}</span>
+              <span className="truncate text-xs text-muted-foreground">
+                {handle}
+              </span>
             </div>
           </div>
-          <CardAction>
-            <small className="text-muted-foreground">
+          <CardAction className="shrink-0">
+            <small className="whitespace-nowrap text-muted-foreground">
               {formatDate(post.createdAt)}
             </small>
           </CardAction>
@@ -59,7 +61,7 @@ function PostCard({ post }: { post: PostWithDetails }) {
             <img
               src={postImages[0].url}
               alt={post.title || "Imagen del post"}
-              className="h-60 w-full object-cover"
+              className="h-52 w-full object-cover sm:h-60"
             />
           </div>
         )}
@@ -73,7 +75,7 @@ function PostCard({ post }: { post: PostWithDetails }) {
                     <img
                       src={img.url}
                       alt={`${post.title || "Imagen del post"} ${idx + 1}`}
-                      className="h-60 w-full object-cover"
+                      className="h-52 w-full object-cover sm:h-60"
                     />
                   </div>
                 </CarouselItem>
@@ -91,11 +93,11 @@ function PostCard({ post }: { post: PostWithDetails }) {
 
         <CardContent className="flex flex-col gap-2">
           {post.title && (
-            <h3 className="font-semibold text-base leading-snug text-foreground">
+            <h3 className="break-words font-semibold text-base leading-snug text-foreground">
               {post.title}
             </h3>
           )}
-          <p className="text-md leading-relaxed text-foreground">
+          <p className="break-words text-sm leading-relaxed text-foreground sm:text-base">
             {post.description}
           </p>
           {post.Tags && post.Tags.length > 0 && (
@@ -115,7 +117,7 @@ function PostCard({ post }: { post: PostWithDetails }) {
         </CardContent>
       </CardSurface>
 
-      <CardFooter className="justify-between border-t-0 justify-between bg-transparent gap-1 px-1 pt-1.5 pb-0.5">
+      <CardFooter className="justify-between border-t-0 bg-transparent gap-1 px-1 pt-1.5 pb-0.5">
         <div className="flex gap-1">
           <Button
             variant="ghost"

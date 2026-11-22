@@ -203,6 +203,6 @@
   * {
     @apply border-border outline-ring/50;}
   body {
-    @apply min-h-screen bg-background text-foreground;}
+    @apply min-h-screen overflow-x-clip bg-background text-foreground;}
   html {
     @apply bg-background font-sans;}}

@@ -83,7 +83,7 @@ export function ImageUpload({
   return (
     <Field data-invalid={Boolean(message)}>
       <FieldLabel htmlFor={id}>Imágenes (URL)</FieldLabel>
-      <div className="flex gap-2">
+      <div className="flex flex-col gap-2 sm:flex-row">
         <Input
           ref={ref}
           id={id}
@@ -109,6 +109,7 @@ export function ImageUpload({
         <Button
           type="button"
           variant="outline"
+          className="w-full shrink-0 sm:w-auto"
           disabled={disabled || !urlInput.trim()}
           onClick={handleAddUrl}
         >
