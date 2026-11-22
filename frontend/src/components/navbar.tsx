@@ -43,40 +43,24 @@ function Navbar() {
 
   return (
     <header className="sticky top-3 z-50 mx-auto w-[calc(100%-2rem)] max-w-4xl rounded-2xl bg-card-shell/85 p-1.5 ring-1 ring-foreground/10 shadow-[0_8px_24px_-6px_rgb(0_0_0/0.12)] backdrop-blur-md supports-[backdrop-filter]:bg-card-shell/75 dark:ring-white/[0.07] dark:shadow-[0_12px_32px_-8px_rgb(0_0_0/0.6)]">
-      <div className="flex w-full items-center justify-between rounded-[11px] bg-card/90 px-4 py-1.5 ring-1 ring-foreground/[0.06] shadow-(--card-highlight) dark:ring-white/[0.08]">
-        {user ? (
-          <DropdownMenu>
-            <DropdownMenuTrigger
-              render={
-                <Button variant="ghost" size="icon" className="rounded-full">
-                  <Avatar>
-                    <AvatarImage alt={user.nickName} />
-                    <AvatarFallback>
-                      {user.nickName.charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                </Button>
-              }
+      <div className="flex w-full items-center justify-between rounded-[11px] bg-card/90 px-6 py-2.5 ring-1 ring-foreground/[0.06] shadow-(--card-highlight) dark:ring-white/[0.08]">
+        <Link
+          to="/home"
+          aria-label="UnaHur Anti-Social"
+          className="relative block h-10 w-[4.8rem] shrink-0 overflow-hidden"
+        >
+            <img
+              src="/logo-light.png"
+              alt="UnaHur Anti-Social"
+              className="pointer-events-none absolute top-1/2 left-1/2 h-20 w-20 max-w-none -translate-x-1/2 -translate-y-1/2 mix-blend-multiply dark:hidden"
             />
-            <DropdownMenuContent className="w-32">
-              <DropdownMenuGroup>
-                <DropdownMenuItem onClick={() => navigate("/profile")}>
-                  Mi perfil
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-              <DropdownMenuSeparator />
-              <DropdownMenuGroup>
-                <DropdownMenuItem onClick={logoutUser} variant="destructive">
-                  Cerrar sesión
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        ) : (
-          <Button render={<Link to="/login" />} variant="outline" size="sm">
-            Iniciar sesión
-          </Button>
-        )}
+            <img
+              src="/logo-dark.png"
+              alt=""
+              aria-hidden
+              className="pointer-events-none absolute top-1/2 left-1/2 hidden h-20 w-20 max-w-none -translate-x-1/2 -translate-y-1/2 mix-blend-screen dark:block"
+            />
+        </Link>
 
         <NavigationMenu className="flex justify-center w-full">
           <NavigationMenuList className="flex gap-2">
@@ -121,7 +105,7 @@ function Navbar() {
           </NavigationMenuList>
         </NavigationMenu>
 
-        <div className="flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2">
           <ModeToggle />
           {user && (
             <Dialog open={postDialogOpen} onOpenChange={setPostDialogOpen}>
@@ -130,6 +114,39 @@ function Navbar() {
                 <PostForm onSuccess={() => setPostDialogOpen(false)} />
               </DialogContent>
             </Dialog>
+          )}
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                render={
+                  <Button variant="ghost" size="icon" className="rounded-full">
+                    <Avatar>
+                      <AvatarImage alt={user.nickName} />
+                      <AvatarFallback>
+                        {user.nickName.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                }
+              />
+              <DropdownMenuContent className="w-32">
+                <DropdownMenuGroup>
+                  <DropdownMenuItem onClick={() => navigate("/profile")}>
+                    Mi perfil
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuItem onClick={logoutUser} variant="destructive">
+                    Cerrar sesión
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button render={<Link to="/login" />} variant="outline" size="sm">
+              Iniciar sesión
+            </Button>
           )}
         </div>
       </div>
