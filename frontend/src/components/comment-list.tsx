@@ -18,6 +18,7 @@ import {
   EmptyTitle,
 } from "./ui/empty";
 import { MessageSquare } from "lucide-react";
+import { StaggerList, Swap } from "@/components/fade";
 
 export default function CommentList({ comments }: { comments: Comment[] }) {
   const sortedComments = [...comments].sort(
@@ -35,52 +36,57 @@ export default function CommentList({ comments }: { comments: Comment[] }) {
         <Separator className="flex-1" />
       </div>
 
-      {comments.length > 0 ? (
-        <div className="flex flex-col gap-3">
-          {sortedComments.map((comment) => {
-            const {
-              displayName: commentAuthor,
-              handle: commentHandle,
-              initials: commentInitials,
-            } = getAuthorDetails(comment.User?.nickName);
+      <Swap view={comments.length > 0 ? "list" : "empty"}>
+        {sortedComments.length > 0 ? (
+          <StaggerList
+            items={sortedComments}
+            getKey={(comment) => comment.id}
+            grow
+            className="flex flex-col gap-3"
+            renderItem={(comment) => {
+              const {
+                displayName: commentAuthor,
+                handle: commentHandle,
+                initials: commentInitials,
+              } = getAuthorDetails(comment.User?.nickName);
 
-            return (
-              <CardShell key={comment.id}>
+              return (
+              <CardShell>
                 <CardSurface size="sm" className="gap-2">
-                  <CardHeader className="items-center">
-                    <div className="flex items-center gap-2.5">
-                      <Avatar size="sm">
+                  <CardHeader className="items-center gap-2">
+                    <div className="flex min-w-0 items-center gap-2.5">
+                      <Avatar size="sm" className="shrink-0">
                         <AvatarImage src="" alt={commentAuthor} />
                         <AvatarFallback>{commentInitials}</AvatarFallback>
                       </Avatar>
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-sm font-medium text-foreground">
+                      <div className="flex min-w-0 flex-col leading-tight sm:flex-row sm:items-baseline sm:gap-2">
+                        <span className="truncate text-sm font-medium text-foreground">
                           {commentAuthor}
                         </span>
-                        <span className="text-xs text-muted-foreground">
+                        <span className="truncate text-xs text-muted-foreground">
                           {commentHandle}
                         </span>
                       </div>
                     </div>
                     {comment.createdAt && (
-                      <CardAction>
-                        <small className="text-xs text-muted-foreground">
+                      <CardAction className="shrink-0">
+                        <small className="whitespace-nowrap text-xs text-muted-foreground">
                           {formatDate(comment.createdAt)}
                         </small>
                       </CardAction>
                     )}
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm leading-relaxed text-foreground">
+                    <p className="break-words text-sm leading-relaxed text-foreground">
                       {comment.content}
                     </p>
                   </CardContent>
                 </CardSurface>
               </CardShell>
-            );
-          })}
-        </div>
-      ) : (
+              );
+            }}
+          />
+        ) : (
         <Empty>
           <EmptyHeader>
             <EmptyMedia variant="icon">
@@ -88,12 +94,12 @@ export default function CommentList({ comments }: { comments: Comment[] }) {
             </EmptyMedia>
             <EmptyTitle>Aquí verás los comentarios</EmptyTitle>
             <EmptyDescription>
-              Cuando hayan comentarios, aparecerán aquí enlistados en orden
-              ascendente.
+              Cuando haya comentarios, aparecerán aquí.
             </EmptyDescription>
           </EmptyHeader>
         </Empty>
-      )}
+        )}
+      </Swap>
     </>
   );
 }

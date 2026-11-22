@@ -1,12 +1,11 @@
-import { SignupForm } from "../../components/signup-form";
+import { SignupForm } from "@/components/signup-form";
 
-function Login() {
+function RegisterPage() {
   return (
-    <div className="flex min-h-svh w-full items-center justify-center p-6">
+    <section className="flex min-h-[calc(100svh-5.5rem)] w-full items-center justify-center px-3 py-8 sm:px-4">
       <SignupForm className="w-full max-w-sm" />
-    </div>
-
+    </section>
   );
 }
 
-export default Login;
+export default RegisterPage;

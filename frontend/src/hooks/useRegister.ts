@@ -8,26 +8,13 @@ export const useRegister = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const register = async (
-    nickname: string,
-    email: string,
-    password: string,
-    confirmPassword: string
-  ) => {
+  const register = async (nickname: string, email: string) => {
     if (nickname.trim() === "") {
       toast.error("El campo de usuario no puede estar vacío.");
       return;
     }
     if (email.trim() === "") {
       toast.error("El campo de correo electrónico no puede estar vacío.");
-      return;
-    }
-    if (password.length < 8) {
-      toast.error("La contraseña debe tener al menos 8 caracteres.");
-      return;
-    }
-    if (password !== confirmPassword) {
-      toast.error("Las contraseñas no coinciden.");
       return;
     }
     try {

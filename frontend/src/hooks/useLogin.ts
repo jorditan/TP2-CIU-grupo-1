@@ -10,8 +10,9 @@ export const useLogin = () => {
   const { loginUser } = useAuth();
 
   const login = async (nickname: string, password: string) => {
-    if (nickname === "") {
-      toast.error("El campo de correo electrónico no puede estar vacío.");
+    const trimmedNickname = nickname.trim();
+    if (trimmedNickname === "") {
+      toast.error("El campo de usuario no puede estar vacío.");
       return;
     }
     if (password !== "123456") {
@@ -21,14 +22,11 @@ export const useLogin = () => {
     try {
       setIsLoading(true);
       const users = await userService.getAllUsers();
-      console.log(users);
-      const user = users.find((u) => u.nickName === nickname);
+      const user = users.find((u) => u.nickName === trimmedNickname);
       if (user) {
-        console.log("User found:", user);
-        toast.success(`¡Bienvenido, ${user.nickName}!`);
-        localStorage.setItem("user", JSON.stringify(user));
-        navigate("/home");
         loginUser(user);
+        toast.success(`¡Bienvenido, ${user.nickName}!`);
+        navigate("/home");
       } else {
         toast.error("El usuario no existe.");
       }
