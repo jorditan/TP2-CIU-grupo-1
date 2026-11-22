@@ -2,7 +2,7 @@
 
 Frontend en React + TypeScript para la red social **UnaHur Anti-Social Net**, consumiendo la API del backend incluido en este repositorio.
 
-Permite iniciar sesión (simulada), registrarse, ver el feed de publicaciones, detallar un post, comentar, ver el perfil propio y (en progreso) crear publicaciones.
+Permite iniciar sesión (simulada), registrarse, ver el feed de publicaciones, filtrar por etiquetas, detallar un post, comentar, ver el perfil propio y crear publicaciones.
 
 ## Estructura
 

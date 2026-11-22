@@ -8,9 +8,10 @@ Consume la API REST del backend del monorepo. Incluye:
 
 - Login simulado (`nickName` + contraseña fija `123456`) con `useContext` y `localStorage`
 - Registro de usuarios
-- Home con feed de publicaciones
-- Detalle de publicación (`/posts/:id`) con comentarios
-- Perfil del usuario logueado
+- Home con feed de publicaciones y filtro por etiquetas
+- Detalle de publicación (`/post/:id`) con comentarios
+- Perfil del usuario logueado (`/profile`)
+- Creación de nuevas publicaciones (`/create-post` y desde la barra de navegación)
 - Rutas protegidas para vistas que requieren sesión
 
 ## URL de la API
