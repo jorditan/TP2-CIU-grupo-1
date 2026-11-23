@@ -119,7 +119,6 @@ function Navbar() {
               description="Ingresa la información necesaria para crear una publicación."
               trigger={
                 <Button
-                  size="sm"
                   aria-label="Crear publicación"
                   className="hidden md:inline-flex gap-1.5"
                 >
