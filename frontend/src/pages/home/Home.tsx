@@ -1,6 +1,7 @@
 import { useAuth } from "@/context/AuthContext";
 import { usePost } from "@/hooks/usePost";
 import { useTag } from "@/hooks/useTag";
+import { usePagination } from "@/hooks/usePagination";
 import { getCarouselItems, getGreeting, GROUP_MEMBERS } from "@/lib/utils";
 import PostCard from "@/components/post-card";
 import { Avatar, AvatarFallback, AvatarGroup } from "@/components/ui/avatar";
@@ -37,9 +38,11 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-import { FileText, X } from "lucide-react";
+import { ChevronDown, FileText, X } from "lucide-react";
 import { StaggerList, Swap } from "@/components/fade";
 import { useSearchParams } from "react-router-dom";
+
+const POSTS_PER_PAGE = 5;
 
 function Home() {
   const { user } = useAuth();
@@ -55,6 +58,9 @@ function Home() {
         post.Tags?.some((tag) => tag.id === selectedTagId)
       )
     : (posts ?? []);
+
+  const { visibleItems, hasMore, loadMore, shownCount, totalCount } =
+    usePagination(filteredPosts, POSTS_PER_PAGE, selectedTagId);
 
   const postCount = posts?.length ?? 0;
   const carouselItems = getCarouselItems(postCount);
@@ -192,12 +198,39 @@ function Home() {
               </CardHeader>
             </Card>
           ) : filteredPosts.length > 0 ? (
-            <StaggerList
-              items={filteredPosts}
-              getKey={(post) => post.id}
-              className="flex w-full flex-col items-center gap-4"
-              renderItem={(post) => <PostCard post={post} />}
-            />
+            <div className="flex w-full flex-col items-center gap-4">
+              <StaggerList
+                items={visibleItems}
+                getKey={(post) => post.id}
+                className="flex w-full flex-col items-center gap-4"
+                renderItem={(post) => <PostCard post={post} />}
+              />
+
+              <div className="flex w-full flex-col items-center gap-2 pt-2">
+                <span
+                  className="text-xs text-muted-foreground"
+                  aria-live="polite"
+                >
+                  Mostrando {shownCount} de {totalCount} publicaciones
+                </span>
+                {hasMore ? (
+                  <Button
+                    variant="outline"
+                    className="w-full gap-1.5 sm:w-auto"
+                    onClick={loadMore}
+                  >
+                    <ChevronDown className="size-4" />
+                    Cargar más
+                  </Button>
+                ) : (
+                  totalCount > POSTS_PER_PAGE && (
+                    <span className="text-xs text-muted-foreground">
+                      Llegaste al final del feed
+                    </span>
+                  )
+                )}
+              </div>
+            </div>
           ) : (
             <Empty>
               <EmptyHeader>
