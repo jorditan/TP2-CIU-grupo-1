@@ -1,6 +1,7 @@
 import type { Comment } from "@/types/comment";
 import { formatDate } from "@/lib/utils";
 import { getAuthorDetails } from "@/lib/author";
+import { AuthorLink } from "@/components/author-link";
 import {
   CardAction,
   CardContent,
@@ -54,7 +55,10 @@ export default function CommentList({ comments }: { comments: Comment[] }) {
               <CardShell>
                 <CardSurface size="sm" className="gap-2">
                   <CardHeader className="items-center gap-2">
-                    <div className="flex min-w-0 items-center gap-2.5">
+                    <AuthorLink
+                      userId={comment.User?.id}
+                      className="flex min-w-0 items-center gap-2.5"
+                    >
                       <Avatar size="sm" className="shrink-0">
                         <AvatarImage src="" alt={commentAuthor} />
                         <AvatarFallback>{commentInitials}</AvatarFallback>
@@ -67,7 +71,7 @@ export default function CommentList({ comments }: { comments: Comment[] }) {
                           {commentHandle}
                         </span>
                       </div>
-                    </div>
+                    </AuthorLink>
                     {comment.createdAt && (
                       <CardAction className="shrink-0">
                         <small className="whitespace-nowrap text-xs text-muted-foreground">

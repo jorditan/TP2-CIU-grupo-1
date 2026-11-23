@@ -20,6 +20,7 @@ import {
 } from "./ui/dropdown-menu";
 import { useAuth } from "@/context/AuthContext";
 import { useTag } from "@/hooks/useTag";
+import { useUsers } from "@/hooks/useUsers";
 import {
   Command,
   CommandDialog,
@@ -44,6 +45,12 @@ function Navbar() {
   const [open, setOpen] = useState(false);
   const [postDialogOpen, setPostDialogOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { users, loading: usersLoading, error: usersError } = useUsers();
+
+  const handleSelectUser = (userId: number) => {
+    setOpen(false);
+    navigate(userId === user?.id ? "/profile" : `/user/${userId}`);
+  };
 
   useEffect(() => {
     setMobileMenuOpen(false);
@@ -281,12 +288,35 @@ function Navbar() {
         <Command>
           <CommandInput placeholder="Encontrá al usuario que buscás..." />
           <CommandList>
-            <CommandEmpty>No results found.</CommandEmpty>
-            <CommandGroup heading="Últimas búsquedas">
-              <CommandItem>mmati jordan</CommandItem>
-              <CommandItem>nicolaspaz</CommandItem>
-              <CommandItem>Sebavilla</CommandItem>
-            </CommandGroup>
+            {usersLoading ? (
+              <p className="py-6 text-center text-sm text-muted-foreground">
+                Cargando usuarios...
+              </p>
+            ) : usersError ? (
+              <p className="py-6 text-center text-sm text-destructive">
+                {usersError}
+              </p>
+            ) : (
+              <>
+                <CommandEmpty>No se encontraron usuarios.</CommandEmpty>
+                <CommandGroup heading="Usuarios">
+                  {users.map((u) => (
+                    <CommandItem
+                      key={u.id}
+                      value={u.nickName}
+                      onSelect={() => handleSelectUser(u.id)}
+                    >
+                      <Avatar className="size-6">
+                        <AvatarFallback className="text-xs">
+                          {u.nickName.slice(0, 2).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span>{u.nickName}</span>
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </>
+            )}
           </CommandList>
         </Command>
       </CommandDialog>

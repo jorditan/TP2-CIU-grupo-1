@@ -21,6 +21,7 @@ import { Badge } from "./ui/badge";
 import { formatDate } from "@/lib/utils";
 import type { PostWithDetails } from "@/hooks/usePost";
 import { Link } from "react-router-dom";
+import { AuthorLink } from "./author-link";
 
 function PostCard({ post }: { post: PostWithDetails }) {
   const displayName = post.User?.nickName || post.author || "Usuario";
@@ -35,7 +36,10 @@ function PostCard({ post }: { post: PostWithDetails }) {
     <CardShell className="w-full max-w-lg">
       <CardSurface>
         <CardHeader className="items-center gap-2">
-          <div className="flex min-w-0 items-center gap-3">
+          <AuthorLink
+            userId={post.User?.id}
+            className="flex min-w-0 items-center gap-3"
+          >
             <Avatar size="lg" className="shrink-0">
               <AvatarImage src="" alt={displayName} />
               <AvatarFallback>{initials}</AvatarFallback>
@@ -48,7 +52,7 @@ function PostCard({ post }: { post: PostWithDetails }) {
                 {handle}
               </span>
             </div>
-          </div>
+          </AuthorLink>
           <CardAction className="shrink-0">
             <small className="whitespace-nowrap text-muted-foreground">
               {formatDate(post.createdAt)}
