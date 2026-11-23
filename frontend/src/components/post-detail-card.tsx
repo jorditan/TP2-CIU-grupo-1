@@ -1,6 +1,7 @@
 import type { PostWithDetails } from "@/hooks/usePost";
 import { formatDate } from "@/lib/utils";
 import { getAuthorDetails } from "@/lib/author";
+import { AuthorLink } from "@/components/author-link";
 import { Heart, MessageCircle } from "lucide-react";
 import {
   CardAction,
@@ -41,7 +42,10 @@ export default function PostDetailCard({
     <CardShell className="w-full">
       <CardSurface className="gap-4 py-4 sm:py-5">
         <CardHeader className="items-center gap-2 px-4 sm:px-5">
-          <div className="flex min-w-0 items-center gap-3 sm:gap-3.5">
+          <AuthorLink
+            userId={post.User?.id}
+            className="flex min-w-0 items-center gap-3 sm:gap-3.5"
+          >
             <Avatar size="lg" className="shrink-0">
               <AvatarImage src="" alt={displayName} />
               <AvatarFallback>{initials}</AvatarFallback>
@@ -54,7 +58,7 @@ export default function PostDetailCard({
                 {handle}
               </span>
             </div>
-          </div>
+          </AuthorLink>
           <CardAction className="shrink-0">
             <small className="whitespace-nowrap text-xs text-muted-foreground">
               {formatDate(post.createdAt)}
