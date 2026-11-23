@@ -4,6 +4,7 @@ import Home from "@/pages/home/Home";
 import RegisterPage from "@/pages/register/RegisterPage";
 import Profile from "@/pages/profile/Profile";
 import CreatePost from "@/pages/create-post/CreatePost";
+import UserProfile from "@/pages/user/UserProfile";
 import Post from "@/components/post";
 import App from "@/App";
 import ProtectedRoute from "@/components/protected-route";
@@ -32,6 +33,10 @@ const routes = [
       {
         path: "/post/:id",
         Component: Post,
+      },
+      {
+        path: "/user/:id",
+        Component: UserProfile,
       },
       {
         Component: ProtectedRoute,
