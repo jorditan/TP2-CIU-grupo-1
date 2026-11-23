@@ -1,12 +1,6 @@
-import { useEffect, useState } from "react";
-import type { Comment } from "@/types/comment";
-import type { PostImage } from "@/types/postImage";
-import { commentService } from "@/services/commentService";
-import { postService } from "@/services/postService";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import type { PostWithDetails } from "@/hooks/usePost";
-import { useComment } from "@/hooks/useComment";
+import { usePostDetail } from "@/hooks/usePostDetail";
 import { useAuth } from "@/context/AuthContext";
 import {
   CardDescription,
@@ -22,60 +16,8 @@ import PostDetailCard from "./post-detail-card";
 
 function Post() {
   const { user } = useAuth();
-  const { createComment } = useComment();
   const { id } = useParams();
-
-  const [post, setPost] = useState<PostWithDetails | null>(null);
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!id) return;
-
-    let cancelled = false;
-
-    const loadPost = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const postId = Number(id);
-
-        const [basePost, commentsResult, images] = await Promise.all([
-          postService.getById(postId),
-          commentService.getCommentsByPostId(postId),
-          postService.getPostImages(postId),
-        ]);
-
-        if (cancelled) return;
-
-        const loadedComments = (commentsResult ?? []) as Comment[];
-
-        setPost({
-          ...basePost,
-          comments: loadedComments,
-          images: (images ?? []) as PostImage[],
-        });
-        setComments(loadedComments);
-      } catch (err) {
-        console.error("Error al cargar la publicación:", err);
-        if (!cancelled) {
-          setPost(null);
-          setComments([]);
-          setError("No se pudo cargar la publicación. Intentá nuevamente.");
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    };
-
-    void loadPost();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [id]);
+  const { post, loading, error, submitComment } = usePostDetail(Number(id));
 
   if (loading) {
     return (
@@ -124,18 +66,13 @@ function Post() {
           <ArrowLeft className="size-4" />
         </Button>
 
-        <PostDetailCard post={post} commentCount={comments.length} />
+        <PostDetailCard post={post} commentCount={post.comments.length} />
 
         <div className="flex flex-col gap-4">
           {user ? (
             <CommentForm
               placeholder="Escribe un comentario..."
-              onSubmit={async (comment) => {
-                await createComment(post.id, comment, user.id);
-
-                const data = await commentService.getCommentsByPostId(post.id);
-                if (data) setComments(data);
-              }}
+              onSubmit={(comment) => submitComment(comment, user.id)}
             />
           ) : (
             <p className="text-sm text-muted-foreground">
@@ -148,7 +85,7 @@ function Post() {
             </p>
           )}
 
-          <CommentList comments={comments} />
+          <CommentList comments={post.comments} />
         </div>
       </div>
     </section>
