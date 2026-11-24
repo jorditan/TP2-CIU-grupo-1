@@ -12,6 +12,7 @@ import {
 import {
   Field,
   FieldDescription,
+  FieldError,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
@@ -26,9 +27,25 @@ export function LoginForm({
   const { login, isLoading } = useLogin();
   const [nickname, setNickname] = useState("");
   const [password, setPassword] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+
+  // Validaciones: se calculan en cada render y se muestran recién después de intentar enviar
+  const nicknameError =
+    nickname.trim() === "" ? "El usuario es obligatorio." : null;
+  const passwordError =
+    password === ""
+      ? "La contraseña es obligatoria."
+      : password !== "123456"
+        ? "La contraseña es incorrecta."
+        : null;
+
+  const visibleNicknameError = submitted ? nicknameError : null;
+  const visiblePasswordError = submitted ? passwordError : null;
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setSubmitted(true);
+    if (nicknameError || passwordError) return;
     login(nickname, password);
   };
 
@@ -43,9 +60,9 @@ export function LoginForm({
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} noValidate>
               <FieldGroup>
-                <Field>
+                <Field data-invalid={visibleNicknameError !== null}>
                   <FieldLabel htmlFor="nickname">Usuario</FieldLabel>
                   <Input
                     id="nickname"
@@ -53,10 +70,13 @@ export function LoginForm({
                     placeholder="Ingresar usuario"
                     value={nickname}
                     onChange={(event) => setNickname(event.target.value)}
-                    required
+                    aria-invalid={visibleNicknameError !== null}
                   />
+                  {visibleNicknameError && (
+                    <FieldError>{visibleNicknameError}</FieldError>
+                  )}
                 </Field>
-                <Field>
+                <Field data-invalid={visiblePasswordError !== null}>
                   <FieldLabel htmlFor="password">Contraseña</FieldLabel>
                   <Input
                     id="password"
@@ -64,8 +84,11 @@ export function LoginForm({
                     placeholder="123456"
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
-                    required
+                    aria-invalid={visiblePasswordError !== null}
                   />
+                  {visiblePasswordError && (
+                    <FieldError>{visiblePasswordError}</FieldError>
+                  )}
                 </Field>
                 <Field>
                   <Button type="submit" disabled={isLoading}>
@@ -73,7 +96,8 @@ export function LoginForm({
                   </Button>
 
                   <FieldDescription className="text-center">
-                    ¿No tenés una cuenta? <Link to="/register">Registrarse</Link>
+                    ¿No tenés una cuenta?{" "}
+                    <Link to="/register">Registrarse</Link>
                   </FieldDescription>
                 </Field>
               </FieldGroup>
