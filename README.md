@@ -4,6 +4,13 @@ Frontend en React + TypeScript para la red social **UnaHur Anti-Social Net**, co
 
 Permite iniciar sesión (simulada), registrarse, ver el feed de publicaciones, filtrar por etiquetas, detallar un post, comentar, ver el perfil propio y crear publicaciones.
 
+## Integrantes (Grupo 1)
+
+- Andino Guasch Pablo Elías
+- Matías Owen Jordán
+- Dolenz Elias
+- Marcelo Perez Groh
+
 ## Estructura
 
 - `frontend/`: aplicación React con Vite, TypeScript y Tailwind.

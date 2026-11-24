@@ -30,7 +30,7 @@ import {
   CommandItem,
   CommandList,
 } from "./ui/command";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Menu, Plus, Search, X } from "lucide-react";
 import { PostForm } from "./post-form";
 import { BrandLogo } from "./brand-logo";
@@ -44,17 +44,18 @@ function Navbar() {
   const location = useLocation();
   const [open, setOpen] = useState(false);
   const [postDialogOpen, setPostDialogOpen] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileMenuPath, setMobileMenuPath] = useState<string | null>(null);
+  const mobileMenuOpen = mobileMenuPath === location.pathname;
+  const setMobileMenuOpen = (next: boolean | ((prev: boolean) => boolean)) => {
+    const isOpen = typeof next === "function" ? next(mobileMenuOpen) : next;
+    setMobileMenuPath(isOpen ? location.pathname : null);
+  };
   const { users, loading: usersLoading, error: usersError } = useUsers();
 
   const handleSelectUser = (userId: number) => {
     setOpen(false);
     navigate(userId === user?.id ? "/profile" : `/user/${userId}`);
   };
-
-  useEffect(() => {
-    setMobileMenuOpen(false);
-  }, [location.pathname]);
 
   return (
     <>
