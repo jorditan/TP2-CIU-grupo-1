@@ -12,6 +12,7 @@ import {
 import {
   Field,
   FieldDescription,
+  FieldError,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
@@ -19,16 +20,33 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useRegister } from "@/hooks/useRegister";
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
+  const [submitted, setSubmitted] = useState(false);
   const { register, isLoading } = useRegister();
+
+  const nicknameError =
+    nickname.trim() === "" ? "El usuario es obligatorio." : null;
+  const emailError =
+    email.trim() === ""
+      ? "El email es obligatorio."
+      : !EMAIL_REGEX.test(email.trim())
+        ? "Ingresá un email válido (por ejemplo: nombre@correo.com)."
+        : null;
+
+  const visibleNicknameError = submitted ? nicknameError : null;
+  const visibleEmailError = submitted ? emailError : null;
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setSubmitted(true);
+    if (nicknameError || emailError) return;
     register(nickname, email);
   };
 
@@ -43,33 +61,40 @@ export function SignupForm({
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} noValidate>
               <FieldGroup>
-                <Field>
+                <Field data-invalid={visibleNicknameError !== null}>
                   <FieldLabel htmlFor="nickname">Usuario</FieldLabel>
                   <Input
                     id="nickname"
                     type="text"
                     placeholder="Ingresar usuario"
-                    required
                     value={nickname}
                     onChange={(e) => setNickname(e.target.value)}
+                    aria-invalid={visibleNicknameError !== null}
                   />
+                  {visibleNicknameError && (
+                    <FieldError>{visibleNicknameError}</FieldError>
+                  )}
                 </Field>
-                <Field>
+                <Field data-invalid={visibleEmailError !== null}>
                   <FieldLabel htmlFor="email">Email</FieldLabel>
                   <Input
                     id="email"
                     type="email"
                     placeholder="tucorreo@gmail.com"
-                    required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    aria-invalid={visibleEmailError !== null}
                   />
-                  <FieldDescription>
-                    Al iniciar sesión, utilizá la contraseña fija{" "}
-                    <span className="font-mono font-medium">123456</span>.
-                  </FieldDescription>
+                  {visibleEmailError ? (
+                    <FieldError>{visibleEmailError}</FieldError>
+                  ) : (
+                    <FieldDescription>
+                      Al iniciar sesión, utilizá la contraseña fija{" "}
+                      <span className="font-mono font-medium">123456</span>.
+                    </FieldDescription>
+                  )}
                 </Field>
                 <FieldGroup>
                   <Field>

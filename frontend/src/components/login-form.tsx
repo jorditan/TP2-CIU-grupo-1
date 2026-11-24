@@ -29,7 +29,6 @@ export function LoginForm({
   const [password, setPassword] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
-  // Validaciones: se calculan en cada render y se muestran recién después de intentar enviar
   const nicknameError =
     nickname.trim() === "" ? "El usuario es obligatorio." : null;
   const passwordError =
